@@ -1,0 +1,48 @@
+PARSER_BEGIN(Exp1)
+// código Java que invoca o parser
+public class Exp1 {
+public static void main(String args[]) throws ParseException {
+// criação do objecto utilizando o constructor com argumento para
+// ler do standard input (teclado)
+Exp1 parser = new Exp1(System.in);
+parser.Start();
+}
+}
+PARSER_END(Exp1)
+// símbolos que não devem ser considerados na análise
+SKIP :
+{
+ " " | "\t" | "\r"
+}
+// definição dos tokens (símbolos terminais)
+TOKEN:
+{
+	//<REFERENCIA:"@" <TIPO_CORPO> "}" >
+	//|<TIPO_CORPO: "book" <BOOK> | "article" <ARTICLE> | "misc" <MISC> >
+	//|<BOOK: <BOOK_ENTRY> "," <BOOK> | <BOOK_ENTRY> >
+	<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> >
+	//|<ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PAGES> >
+	|<ENTRY_AUTHOR: "author" "=" (["a"-"z","A"-"Z"])+ >
+	|<ENTRY_TITLE: "title" "=" (["a"-"z","A"-"Z"])+ >
+	|<ENTRY_YEAR: ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] >
+	//|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
+}
+
+//START=REFERENCIA
+void Start() : {Token t1;}
+{
+	"@" Tipo_Corpo() "}" 
+}
+
+void Tipo_Corpo() : {Token t1;}
+{
+	"book" Book()
+	//| "article" t1=<ARTICLE> 
+	//| "misc" t1=<MISC> 
+}
+
+void Book() : {Token t1;}
+{
+	//<BOOK_ENTRY> "," Book()
+	 <BOOK_ENTRY> 	
+}

@@ -1,3 +1,8 @@
+//options
+//{
+//  LOOKAHEAD=1;
+//}
+
 PARSER_BEGIN(Exp1)
 // código Java que invoca o parser
 public class Exp1 {
@@ -20,32 +25,49 @@ SKIP :
 // definição dos tokens (símbolos terminais)
 TOKEN:
 {
-	//<REFERENCIA:"@" <TIPO_CORPO> "}" >
-	//|<TIPO_CORPO: "book" <BOOK> | "article" <ARTICLE> | "misc" <MISC> >
-	//|<BOOK: <BOOK_ENTRY> "," <BOOK> | <BOOK_ENTRY> >
-	<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> >
+	//===========================================
+	//DEFINIÇOES BASICAS
+	//===========================================
+	<ID: (["a"-"z","A"-"Z","0"-"9"])+>
+	|<INFO_SEPARATOR: "," >
+	|<START_ITEM: "@" >
+	|<END_ITEM: "}" >
+	|<INFO_OPEN: "{" | "\"" >
+	|<INFO_CLOSE: "}" | "\"" >
+	//===========================================
+	//DEFINIR ENTRY E ASSOCIAR AOS DIVERSOS TIPOS
+	//===========================================
+	|<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> >
 	//|<ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PAGES> >
-	|<ENTRY_AUTHOR: "author" "=" "\"" (["a"-"z","A"-"Z"])+ "\"" >
-	|<ENTRY_TITLE:  "title" "=" "\"" (["a"-"z","A"-"Z"])+ "\""  >
-	|<ENTRY_YEAR: "year" "=" "\"" ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] "\"" >
+	|<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+	|<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+	|<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
 	//|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
 }
 
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
-	"@" Tipo_Corpo() "}" 
+	(Reference())* "\n"//mudar p/ <EOF> + tarde
 }
 
-void Tipo_Corpo() : {Token t1;}
+void Reference() : {Token t1;}
 {
-	"book{" Book()
+  { System.out.print("\n-->new item");}
+  <START_ITEM> ItemBody() <END_ITEM> 
+}
+
+void ItemBody() : {Token t1;}
+{
+	{ System.out.print(" of type:");}
+	(
+	"book{" t1=<ID> { System.out.print("book" + "\nid:" + t1.image + "\n_with entries:\n");} Book() 
 	//| "article{" t1=<ARTICLE> 
 	//| "misc{" t1=<MISC> 
+	) { System.out.println("__________");}
 }
 
 void Book() : {Token t1;}
 {
-	<BOOK_ENTRY> "," Book()
-	|<BOOK_ENTRY> 	
+	<INFO_SEPARATOR> t1=<BOOK_ENTRY> [Book()] { System.out.println("__"+t1.image);}
 }

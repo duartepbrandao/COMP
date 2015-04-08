@@ -1,0 +1,101 @@
+//options
+//{
+//  LOOKAHEAD=1;
+//}
+
+PARSER_BEGIN(Exp1)
+// código Java que invoca o parser
+public class Exp1 {
+
+static java.util.List<Item> items;
+
+public static void main(String args[]) throws ParseException {
+// criação do objecto utilizando o constructor com argumento para
+// ler do standard input (teclado)
+items = new java.util.ArrayList<Item>();
+Exp1 parser = new Exp1(System.in);
+parser.Start();
+	try{
+	java.io.PrintWriter out = new java.io.PrintWriter("biblio.html");
+	
+	out.println("<!DOCTYPE html>");
+	out.println("<html>");
+	
+/*	
+<head>
+  <title>Page Title</title>
+</head>
+*/
+	out.println("<body>\n");
+	for(int i = 0; i<items.size(); i++) items.get(i).save2HTML(out);
+	out.println("</body>\n");
+	out.println("</html>");
+	out.close();
+	
+	}catch(Exception e) {
+	System.out.println("FAILED 2 CREATE OUTPUT FILE");
+	}
+}
+}
+PARSER_END(Exp1)
+// símbolos que não devem ser considerados na análise
+SKIP :
+{
+ " " | "\t" | "\r"
+}
+// definição dos tokens (símbolos terminais)
+TOKEN:
+{
+	//===========================================
+	//DEFINIR TIPOS
+	//===========================================
+	<T_BOOK: "book" >
+	|<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_URL> >
+	|<T_ARTICLE: "article" >
+	//...
+	|<T_MISC: "misc" >
+	//...
+	//===========================================
+	//DEFINIR ENTRIES
+	//===========================================
+	|<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+	|<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"1"])+ <INFO_CLOSE>  >
+	|<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
+	|<ENTRY_URL:  "url" "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
+	//|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
+	//===========================================
+	//DEFINIÇOES BASICAS
+	//===========================================
+	|<ID: (["a"-"z","A"-"Z","0"-"9"])+>
+	|<INFO_SEPARATOR: "," >
+	|<START_ITEM: "@" >
+	|<OPEN_ITEM: "{" >
+	|<END_ITEM: "}" >
+	|<INFO_OPEN: "{" | "\"" >
+	|<INFO_CLOSE: "}" | "\"" >
+}
+
+//START=REFERENCIA
+void Start() : {Token t1;}
+{
+	(Reference())* "\n"//mudar p/ <EOF> + tarde
+}
+
+void Reference() : {Token t1;}
+{
+  <START_ITEM> ItemBody() <END_ITEM> 
+}
+
+void ItemBody() : {Token t1 ; Token t2;}
+{
+	(
+	t1=<T_BOOK> <OPEN_ITEM> t2=<ID> {items.add(new Item(t1.image,t2.image));} Book() 
+	//| "article{" t1=<ARTICLE> 
+	//| "misc{" t1=<MISC> 
+	)
+}
+
+void Book() : {Token t1;}
+{
+	<INFO_SEPARATOR> t1=<BOOK_ENTRY> [Book()] {items.get(items.size()-1).addEntry(t1.image); } 
+}

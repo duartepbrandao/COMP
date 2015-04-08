@@ -1,0 +1,1 @@
+public enum ItemType{book,article,misc,error};

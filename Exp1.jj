@@ -27,32 +27,58 @@ SKIP :
 // definição dos tokens (símbolos terminais)
 TOKEN:
 {
-	//===========================================
-	//DEFINIR TIPOS
-	//===========================================
-	<T_BOOK: "book" >
-	|<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> >
-	|<T_ARTICLE: "article" >
-	//...
-	|<T_MISC: "misc" >
-	//...
-	//===========================================
-	//DEFINIR ENTRIES
-	//===========================================
-	|<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-	|<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-	|<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
-	//|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
-	//===========================================
-	//DEFINIÇOES BASICAS
-	//===========================================
-	|<ID: (["a"-"z","A"-"Z","0"-"9"])+>
-	|<INFO_SEPARATOR: "," >
-	|<START_ITEM: "@" >
-	|<OPEN_ITEM: "{" >
-	|<END_ITEM: "}" >
-	|<INFO_OPEN: "{" | "\"" >
-	|<INFO_CLOSE: "}" | "\"" >
+  //===========================================
+  //DEFINIÇOES BASICAS
+  //===========================================
+  <ID: (["a"-"z","A"-"Z","0"-"9"])+>
+  |<INFO_SEPARATOR: "," >
+  |<START_ITEM: "@" >
+  |<END_ITEM: "}" >
+  |<INFO_OPEN: "{" | "\"" >
+  |<INFO_CLOSE: "}" | "\"" >
+  //===========================================
+  //DEFINIR ENTRY E ASSOCIAR AOS DIVERSOS TIPOS
+  //===========================================
+
+  // ---------------------------------------------BOOK_ENTRY -------------------------------------------
+  //---------------------------------------------------------------------------------------------------
+  |<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PUBLISHER> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
+                <ENTRY_SERIES> |<ENTRY_ADDRESS> |<ENTRY_EDITION> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE>
+  //|<ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PAGES> >
+  //------------------------ENTRYS---------------------------------------------------------------------
+  //----------------------------------------
+  |<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+  |<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  |<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
+    |<ENTRY_PUBLISHER: "publisher" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+    |<ENTRY_KEY: "key" "=" <INFO_OPEN> (["1"-"9"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+    |<ENTRY_VOLUME: "volume" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+    |<ENTRY_NUMBER: "number" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+    |<ENTRY_SERIES: "series" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+    |<ENTRY_ADDRESS: "address" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+    |<ENTRY_EDITION: "edition" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+    |<ENTRY_MONTH: "month" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+    |<ENTRY_NOTE: "note" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+    |<ENTRY_ANNNOTE: "annote" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+    <ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+
+
+
+
+    //-------------------------------------ARTICLE_ENTRY----------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------
+    |<ARTICLE_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
+                   <ENTRY_PAGES> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE>
+    |
+
+
+    //-------------------
+
+
+
+
+
+  //|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
 }
 
 //START=REFERENCIA
@@ -63,19 +89,19 @@ void Start() : {Token t1;}
 
 void Reference() : {Token t1;}
 {
-  <START_ITEM> ItemBody() <END_ITEM> 
+  <START_ITEM> ItemBody() <END_ITEM>
 }
 
 void ItemBody() : {Token t1 ; Token t2;}
 {
 	(
-	t1=<T_BOOK> <OPEN_ITEM> t2=<ID> {items.add(new Item(t1.image,t2.image));} Book() 
-	//| "article{" t1=<ARTICLE> 
-	//| "misc{" t1=<MISC> 
+	t1=<T_BOOK> <OPEN_ITEM> t2=<ID> {items.add(new Item(t1.image,t2.image));} Book()
+	//| "article{" t1=<ARTICLE>
+	//| "misc{" t1=<MISC>
 	)
 }
 
 void Book() : {Token t1;}
 {
-	<INFO_SEPARATOR> t1=<BOOK_ENTRY> [Book()] {items.get(items.size()-1).addEntry(t1.image); } 
+	<INFO_SEPARATOR> t1=<BOOK_ENTRY> [Book()] {items.get(items.size()-1).addEntry(t1.image); }
 }

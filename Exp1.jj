@@ -8,12 +8,12 @@ PARSER_BEGIN(Exp1)
 public class Exp1 {
 
 static java.util.List<Item> items;
-FileInputStream in = null;
-in = new FileInputStream("input.txt");
 public static void main(String args[]) throws ParseException {
 // criação do objecto utilizando o constructor com argumento para
 // ler do standard input (teclado)
 items = new java.util.ArrayList<Item>();
+
+in = new FileInputStream("input.txt");
 Exp1 parser = new Exp1(in);
 parser.Start();
 for(int i = 0; i<items.size(); i++) items.get(i).debugPrint();
@@ -34,6 +34,7 @@ TOKEN:
   <ID: (["a"-"z","A"-"Z","0"-"9"])+>
   |<INFO_SEPARATOR: "," >
   |<START_ITEM: "@" >
+  |<OPEN_ITEM: "{" >
   |<END_ITEM: "}" >
   |<INFO_OPEN: "{" | "\"" >
   |<INFO_CLOSE: "}" | "\"" >
@@ -43,8 +44,9 @@ TOKEN:
 
   // ---------------------------------------------BOOK_ENTRY -------------------------------------------
   //---------------------------------------------------------------------------------------------------
+  |<T_BOOK: "book" >
   |<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PUBLISHER> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
-                <ENTRY_SERIES> |<ENTRY_ADDRESS> |<ENTRY_EDITION> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE>
+                <ENTRY_SERIES> |<ENTRY_ADDRESS> |<ENTRY_EDITION> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> >
   //|<ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PAGES> >
   //------------------------ENTRYS---------------------------------------------------------------------
   //----------------------------------------
@@ -61,16 +63,15 @@ TOKEN:
     |<ENTRY_MONTH: "month" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
     |<ENTRY_NOTE: "note" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
     |<ENTRY_ANNNOTE: "annote" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
-    <ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+    |<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
 
 
 
 
     //-------------------------------------ARTICLE_ENTRY----------------------------------------------------
     //--------------------------------------------------------------------------------------------------------
-    |<ARTICLE_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
-                   <ENTRY_PAGES> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE>
-    |
+  //  |<ARTICLE_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
+    //               <ENTRY_PAGES> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> >
 
 
     //-------------------

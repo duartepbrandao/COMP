@@ -1,2 +1,0 @@
-"C:\Program Files\Java\jdk1.7.0_75\bin\javac"
-C:\Users\Bruno\Desktop\COMP_AULAS\javacc-6.0\bin\lib\javacc.jar

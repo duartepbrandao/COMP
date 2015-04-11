@@ -49,20 +49,71 @@ TOKEN:
 	//===========================================
 	//DEFINIR TIPOS
 	//===========================================
-	<T_BOOK: "book" >
-	|<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_URL> >
-	|<T_ARTICLE: "article" >
-	//...
-	|<T_MISC: "misc" >
-	//...
+  // ---------------------------------------------BOOK_ENTRY -------------------------------------------
+  //---------------------------------------------------------------------------------------------------
+  <T_BOOK: "book" >
+  |<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PUBLISHER> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
+                <ENTRY_SERIES> |<ENTRY_ADDRESS> |<ENTRY_EDITION> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >  
+  //--------------------------------------------PROCEEDINGS_ENTRY-------------------------------------------
+  //--------------------------------------------------------------------------------------------------------
+  |<T_PROCEEDINGS: "proceedings" >
+  |<PROCEEDINGS_ENTRY: <ENTRY_TITLE> | <ENTRY_KEY> | <ENTRY_BOOKTITLE> | <ENTRY_EDITOR> | <ENTRY_VOLUME> | <ENTRY_NUMBER> | <ENTRY_SERIES> | 
+                       <ENTRY_ADDRESS> | <ENTRY_MONTH> | <ENTRY_ORGANIZATION> | <ENTRY_PUBLISHER> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> >
+  //--------------------------------------------PHDTHESIS_ENTRY---------------------------------------------
+  //--------------------------------------------------------------------------------------------------------
+  |<T_PHDTHESIS: "phdThesis" >
+  |<PHDTHESIS_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_SCHOOL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_TYPE> | <ENTRY_ADDRESS> |
+                     <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
+  //---------------------------------------------MISC_ENTRY------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------
+  |<T_MISC: "misc" >
+  |<MISC_ENTRY: <ENTRY_KEY> | <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_HOWPUBLISHED> | <ENTRY_MONTH> | <ENTRY_YEAR> | <ENTRY_NOTE> | 
+                <ENTRY_ANNNOTE> | <ENTRY_URL> >
+  //--------------------------------------------ARTICLE_ENTRY----------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------
+  |<T_ARTICLE: "article" >
+  |<ARTICLE_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_JOURNAL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
+                   <ENTRY_PAGES> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
+  //--------------------------------------------MANUAL_ENTRY----------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------
+  |<T_MANUAL: "manual" >
+  |<MANUAL_ENTRY: <ENTRY_TITLE> | <ENTRY_KEY> | <ENTRY_AUTHOR> | <ENTRY_ORGANIZATION> | <ENTRY_ADDRESS> | <ENTRY_EDITION> |
+                  <ENTRY_MONTH> | <ENTRY_YEAR> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
+  //-------------------------------------------MASTERSTHESIS_ENTRY--------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------------------------------------------
+  |<T_MASTERSTHESIS: "masterThesis" >
+  |<MASTERSTHESIS_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_SCHOOL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_TYPE> | <ENTRY_ADDRESS> |
+                         <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
 	//===========================================
 	//DEFINIR ENTRIES
 	//===========================================
 	|<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-	|<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"1"])+ <INFO_CLOSE>  >
-	|<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
-	|<ENTRY_URL:  "url" "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
-	//|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
+  |<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  |<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
+  |<ENTRY_PUBLISHER: "publisher" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+  |<ENTRY_KEY: "key" "=" <INFO_OPEN> (["1"-"9"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+  |<ENTRY_VOLUME: "volume" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+  |<ENTRY_NUMBER: "number" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+  |<ENTRY_SERIES: "series" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+  |<ENTRY_ADDRESS: "address" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+  |<ENTRY_EDITION: "edition" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+  |<ENTRY_MONTH: "month" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+  |<ENTRY_NOTE: "note" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+  |<ENTRY_ANNNOTE: "annote" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+  |<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+  //|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
+  |<ENTRY_JOURNAL: "journal" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+
+  |<ENTRY_ORGANIZATION: "organization" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >   
+
+  |<ENTRY_BOOKTITLE: "booktitle" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  |<ENTRY_EDITOR: "editor" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  |<ENTRY_SCHOOL: "school" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  |<ENTRY_TYPE: "type" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+
+  |<ENTRY_HOWPUBLISHED:"howpublished" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+  
+  |<ENTRY_URL:  "url" "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
 	//===========================================
 	//DEFINIÇOES BASICAS
 	//===========================================
@@ -73,6 +124,7 @@ TOKEN:
 	|<END_ITEM: "}" >
 	|<INFO_OPEN: "{" | "\"" >
 	|<INFO_CLOSE: "}" | "\"" >
+
 }
 
 //START=REFERENCIA

@@ -1,1 +1,1 @@
-public enum ItemType{book,article,misc,error};
+public enum ItemType{book,article,misc,manual,phdThesis,proceedings,masterThesis,error};

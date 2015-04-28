@@ -17,10 +17,13 @@ public Item(String _type, String _id)
 	entries = new java.util.ArrayList<String>();
 }
 
-public void addEntry(String entry)
+
+	public void addEntry(String entry)
 {
 	entries.add(entry);
 }
+
+
 
 /*
 getEntry()
@@ -83,6 +86,45 @@ switch(type)
 			+"(" + getEntry("year") + ")"
 			+"<i>"+getEntry("title",true)+"</i>"
 			+getEntry("publisher",true)+".");
+			break;
+			
+				case proceedings:
+			out.println(
+		    "<i>"+getEntry("title",true)+"</i>"
+			+"(" + getEntry("year") + ")");
+			break;
+
+			case phdThesis:
+			out.println(
+			getEntry("author")
+			+"(" + getEntry("year") + ")"
+			+"<i>"+getEntry("title",true)+"</i>"
+			+getEntry("school")+"."); // VERIFICAR
+			break;
+
+			case misc:
+			//out.println(
+			break;
+
+			case article:
+			out.println(
+			getEntry("author")
+			+"(" + getEntry("year") + ")"
+			+"<i>"+getEntry("title",true)+"</i>"
+			+"<i>"+getEntry("journal",true)+"</i>");
+			break;
+
+			case manual:
+			out.println(
+			"<i>"+getEntry("title",true)+"</i>");
+			break;
+			
+			case masterThesis:
+			out.println(
+			getEntry("author")
+			+"(" + getEntry("year") + ")"
+			+"<i>"+getEntry("title",true)+"</i>"
+			+getEntry("school")+"."); // VERIFICAR
 			break;
 			
 			default:

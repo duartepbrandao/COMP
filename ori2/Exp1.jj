@@ -4,17 +4,29 @@
 //}
 
 PARSER_BEGIN(Exp1)
+import java.util.Comparator;
 // código Java que invoca o parser
 public class Exp1 {
 
 static java.util.List<Item> items;
 
 public static void main(String args[]) throws ParseException {
-// criação do objecto utilizando o constructor com argumento para
-// ler do standard input (teclado)
+
+
+//inicializaçao da lista de items a ser guardados
 items = new java.util.ArrayList<Item>();
+
+//receber do teclado
 Exp1 parser = new Exp1(System.in);
+try{
 parser.Start();
+}catch(ParseException e){}
+
+//order stuff
+if (true)//create a token later for ordering stuff
+java.util.Collections.sort(items, new ItemAutorNameComparator());
+
+//save file
 	try{
 	java.io.PrintWriter out = new java.io.PrintWriter("biblio.html");
 	
@@ -27,11 +39,15 @@ parser.Start();
 </head>
 */
 	out.println("<body>\n");
-	for(int i = 0; i<items.size(); i++) items.get(i).save2HTML(out);
+	for(int i = 0; i<items.size(); i++)
+	{
+		items.get(i).save2HTML(out);
+		//debug:System.out.println(items.get(i).id);
+	}
 	out.println("</body>\n");
 	out.println("</html>");
 	out.close();
-	
+	System.out.println("SUCCESSFULY CREATED OUTPUT FILE");
 	}catch(Exception e) {
 	System.out.println("FAILED 2 CREATE OUTPUT FILE");
 	}
@@ -49,41 +65,14 @@ TOKEN:
 	//===========================================
 	//DEFINIR TIPOS
 	//===========================================
-  // ---------------------------------------------BOOK_ENTRY -------------------------------------------
-  //---------------------------------------------------------------------------------------------------
-  <T_BOOK: "book" >
-  |<BOOK_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_YEAR> | <ENTRY_PUBLISHER> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
-                <ENTRY_SERIES> |<ENTRY_ADDRESS> |<ENTRY_EDITION> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >  
-  //--------------------------------------------PROCEEDINGS_ENTRY-------------------------------------------
-  //--------------------------------------------------------------------------------------------------------
-  |<T_PROCEEDINGS: "proceedings" >
-  |<PROCEEDINGS_ENTRY: <ENTRY_TITLE> | <ENTRY_KEY> | <ENTRY_BOOKTITLE> | <ENTRY_EDITOR> | <ENTRY_VOLUME> | <ENTRY_NUMBER> | <ENTRY_SERIES> | 
-                       <ENTRY_ADDRESS> | <ENTRY_MONTH> | <ENTRY_ORGANIZATION> | <ENTRY_PUBLISHER> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> >
-  //--------------------------------------------PHDTHESIS_ENTRY---------------------------------------------
-  //--------------------------------------------------------------------------------------------------------
-  |<T_PHDTHESIS: "phdThesis" >
-  |<PHDTHESIS_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_SCHOOL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_TYPE> | <ENTRY_ADDRESS> |
-                     <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
-  //---------------------------------------------MISC_ENTRY------------------------------------------------
-  //--------------------------------------------------------------------------------------------------------
-  |<T_MISC: "misc" >
-  |<MISC_ENTRY: <ENTRY_KEY> | <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_HOWPUBLISHED> | <ENTRY_MONTH> | <ENTRY_YEAR> | <ENTRY_NOTE> | 
-                <ENTRY_ANNNOTE> | <ENTRY_URL> >
-  //--------------------------------------------ARTICLE_ENTRY----------------------------------------------------
-  //--------------------------------------------------------------------------------------------------------
-  |<T_ARTICLE: "article" >
-  |<ARTICLE_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_JOURNAL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_VOLUME> | <ENTRY_NUMBER> |
-                   <ENTRY_PAGES> | <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
-  //--------------------------------------------MANUAL_ENTRY----------------------------------------------------
-  //--------------------------------------------------------------------------------------------------------
-  |<T_MANUAL: "manual" >
-  |<MANUAL_ENTRY: <ENTRY_TITLE> | <ENTRY_KEY> | <ENTRY_AUTHOR> | <ENTRY_ORGANIZATION> | <ENTRY_ADDRESS> | <ENTRY_EDITION> |
-                  <ENTRY_MONTH> | <ENTRY_YEAR> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
-  //-------------------------------------------MASTERSTHESIS_ENTRY--------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------------------------------------------------
-  |<T_MASTERSTHESIS: "masterThesis" >
-  |<MASTERSTHESIS_ENTRY: <ENTRY_AUTHOR> | <ENTRY_TITLE> | <ENTRY_SCHOOL> | <ENTRY_YEAR> | <ENTRY_KEY> |<ENTRY_TYPE> | <ENTRY_ADDRESS> |
-                         <ENTRY_MONTH> | <ENTRY_NOTE> | <ENTRY_ANNNOTE> | <ENTRY_URL> >
+	<T_ARTICLE: "article" >
+	|<T_BOOK: "book" >
+	|<T_MANUAL: "manual" >
+	|<T_MASTERSTHESIS: "masterThesis" >
+	|<T_MISC: "misc" >
+	|<T_PHDTHESIS: "phdThesis" >
+	|<T_PROCEEDINGS: "proceedings" >
+
 	//===========================================
 	//DEFINIR ENTRIES
 	//===========================================
@@ -122,32 +111,212 @@ TOKEN:
 	|<START_ITEM: "@" >
 	|<OPEN_ITEM: "{" >
 	|<END_ITEM: "}" >
+
 	|<INFO_OPEN: "{" | "\"" >
 	|<INFO_CLOSE: "}" | "\"" >
-
+	//|<NOT_OPEN_ITEM: (~["{","@","\n"," "])+ >
+	//|<NOT_END_ITEM: (~["}","@","\n"," "])+ >
+	
 }
+
+//<EXCEPTION_T> TOKEN: {:DEFAULT }//\n serve como eof temporariamente
+
 
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
-	(Reference())* "\n"//mudar p/ <EOF> + tarde
+	(Reference())+ "\n"//mudar p/ <EOF> + tarde
 }
 
-void Reference() : {Token t1;}
-{
-  <START_ITEM> ItemBody() <END_ITEM> 
-}
 
-void ItemBody() : {Token t1 ; Token t2;}
+/*catch (ParseException e) {
+	Token taux = getNextToken();
+    System.out.println("Item not defined properly\n");// + e.toString());
+    Token t;
+    /*do {
+      t = getNextToken();
+    } while (t.kind != ID);*/
+	//}
+
+void Reference() : {Token t1; Token t2;}
 {
-	(
-	t1=<T_BOOK> <OPEN_ITEM> t2=<ID> {items.add(new Item(t1.image,t2.image));} Book() 
-	//| "article{" t1=<ARTICLE> 
-	//| "misc{" t1=<MISC> 
+	(<START_ITEM>
+	|{//start item missing
+	Token taux = getToken(0);
+	System.out.println("Warning:Item not opening with '@'. Immediately before line " + taux.beginLine + ",column " +  taux.beginColumn +";");}
 	)
+  
+  try{
+  	(//listing ok
+	(t1=<T_ARTICLE> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
+	|(t1=<T_BOOK> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Book(t1.image,t2.image) )
+	|(t1=<T_MANUAL> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
+	|(t1=<T_MASTERSTHESIS> OpenItem(t1) t2=checkID() {items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
+	|(t1=<T_MISC> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)  )
+	|(t1=<T_PHDTHESIS> OpenItem(t1)     t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) ) 
+	|(t1=<T_PROCEEDINGS> OpenItem(t1)   t2=checkID() {items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
+	)//end of listing ok
+	}
+	catch (ParseException e) {
+	Token te = getToken(0);
+    System.out.println("Error(Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined;");// + e.toString());
+	}
+	
+	CloseItem()
 }
 
-void Book() : {Token t1;}
+void OpenItem(Token t1) : {}
 {
-	<INFO_SEPARATOR> t1=<BOOK_ENTRY> [Book()] {items.get(items.size()-1).addEntry(t1.image); } 
+try{
+	<OPEN_ITEM>
+	}
+catch (ParseException e) {
+    System.out.println("Warning:"+t1.image + " not opened at line " + t1.endLine + ", column " + t1.endColumn + ";");// + e.toString());
+	}	
+}
+
+Token checkID() : { Token t1; }
+{
+	t1=<ID>
+	{return t1;}
+}
+
+
+void CloseItem() : {}
+{
+try{
+  <END_ITEM>
+  }catch (ParseException e)
+  {
+	Token taux = getToken(0);
+	System.out.println("Warning:Not closing item with '}'. At line " + taux.beginLine + ",column " +  taux.beginColumn +";");
+	throw e;
+	}
+}
+
+void Article(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> ArticleEntry(type,id) [Article(type,id)] 
+}
+void ArticleEntry(String type,String id) : {Token t1;}
+{
+try{
+(
+  t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_JOURNAL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> |
+  t1=<ENTRY_PAGES> | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL>
+  ){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+void Book(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> BookEntry(type,id) [Book(type,id)] 
+}
+void BookEntry(String type,String id):{Token t1;}
+{
+try{
+(
+ t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_YEAR> | t1=<ENTRY_PUBLISHER>
+ | t1=<ENTRY_KEY> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> 
+ | t1=<ENTRY_SERIES> |t1=<ENTRY_ADDRESS> |t1=<ENTRY_EDITION>
+ | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL> 
+ ) {items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+
+void Manual(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> ManualEntry(type,id) [Manual(type,id)] 
+}
+void ManualEntry(String type,String id) :  {Token t1;}
+{
+try{
+(
+  t1=<ENTRY_TITLE> | t1=<ENTRY_KEY> | t1=<ENTRY_AUTHOR> | t1=<ENTRY_ORGANIZATION> | t1=<ENTRY_ADDRESS> | t1=<ENTRY_EDITION> |
+                  t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL> 
+){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+
+void MasterThesis(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> MasterThesisEntry(type,id) [MasterThesis(type,id)] 
+}
+void MasterThesisEntry(String type,String id): {Token t1;}
+{
+try{
+(
+  t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_SCHOOL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_TYPE> | t1=<ENTRY_ADDRESS> |
+                       t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL> 
+){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+
+void Misc(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> MiscEntry(type,id) [Misc(type,id)] 
+}
+void MiscEntry(String type,String id): {Token t1;}
+{
+try{
+(
+ t1=<ENTRY_KEY> | t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_HOWPUBLISHED> | t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> | 
+            t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL> 
+){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+
+void PhdThesis(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> PhdThesisEntry(type,id) [PhdThesis(type,id)] 
+}
+void PhdThesisEntry(String type,String id): {Token t1;}
+{
+try{
+(
+  t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_SCHOOL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_TYPE> | t1=<ENTRY_ADDRESS> |
+                    t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> | t1=<ENTRY_URL> 
+){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
+}
+
+void Proceedings(String type,String id) : {Token t1;}
+{
+	<INFO_SEPARATOR> ProceedingsEntry(type,id) [Proceedings(type,id)]
+}
+void ProceedingsEntry(String type,String id): {Token t1;}
+{
+try{
+(
+ t1=<ENTRY_TITLE> | t1=<ENTRY_KEY> | t1=<ENTRY_BOOKTITLE> | t1=<ENTRY_EDITOR> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> | t1=<ENTRY_SERIES> | 
+             t1=<ENTRY_ADDRESS> | t1=<ENTRY_MONTH> | t1=<ENTRY_ORGANIZATION> | t1=<ENTRY_PUBLISHER> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
+){items.get(items.size()-1).addEntry(t1.image); } 
+}
+	catch (ParseException e) {
+	Token te = getToken(1);
+    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"> has an invalid or badly defined entry:" + te.image + ";");
+	}
 }

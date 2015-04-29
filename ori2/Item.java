@@ -20,7 +20,7 @@ public Item(String _type, String _id)
 
 	public void addEntry(String entry)
 {
-	entries.add(entry);
+	entries.add(entry.toLowerCase());
 }
 
 

@@ -24,7 +24,7 @@ parser.Start();
 
 //order stuff
 if (true)//create a token later for ordering stuff
-java.util.Collections.sort(items, new ItemAutorNameComparator());
+java.util.Collections.sort(items, new ItemAutorNameComparator("author"));
 
 //save file
 	try{
@@ -62,10 +62,12 @@ SKIP :
 // definição dos tokens (símbolos terminais)
 TOKEN:
 {
+	<ORDER_SIGN: "##" >
+	
 	//===========================================
 	//DEFINIR TIPOS
 	//===========================================
-	<T_ARTICLE: "article" >
+	|<T_ARTICLE: "article" >
 	|<T_BOOK: "book" >
 	|<T_MANUAL: "manual" >
 	|<T_MASTERSTHESIS: "masterThesis" >
@@ -76,33 +78,50 @@ TOKEN:
 	//===========================================
 	//DEFINIR ENTRIES
 	//===========================================
-	|<ENTRY_AUTHOR: "author" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-  |<ENTRY_TITLE:  "title" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-  |<ENTRY_YEAR: "year" "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
-  |<ENTRY_PUBLISHER: "publisher" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-  |<ENTRY_KEY: "key" "=" <INFO_OPEN> (["1"-"9"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
-  |<ENTRY_VOLUME: "volume" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
-  |<ENTRY_NUMBER: "number" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
-  |<ENTRY_SERIES: "series" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
-  |<ENTRY_ADDRESS: "address" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-  |<ENTRY_EDITION: "edition" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
-  |<ENTRY_MONTH: "month" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-  |<ENTRY_NOTE: "note" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-  |<ENTRY_ANNNOTE: "annote" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
-  |<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
-  //|<ENTRY_PAGES:  ["1"-"9"]([["0"-"9"]])* "-" ["1"-"9"]([["0"-"9"]]) >
-  |<ENTRY_JOURNAL: "journal" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
-
-  |<ENTRY_ORGANIZATION: "organization" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >   
-
-  |<ENTRY_BOOKTITLE: "booktitle" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-  |<ENTRY_EDITOR: "editor" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-  |<ENTRY_SCHOOL: "school" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-  |<ENTRY_TYPE: "type" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-
-  |<ENTRY_HOWPUBLISHED:"howpublished" "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-  
-  |<ENTRY_URL:  "url" "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
+|<AUTHOR: ("a"|"A")("u"|"U")("t"|"T")("h"|"H")("o"|"O")("r"|"R") >
+	|<ENTRY_AUTHOR: <AUTHOR> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<TITLE:("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
+	|<ENTRY_TITLE:  <TITLE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<YEAR:("y"|"Y")("e"|"E")("a"|"A")("r"|"R")>
+	|<ENTRY_YEAR: <YEAR> "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
+|<PUBLISHER:("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("r"|"R")>
+	|<ENTRY_PUBLISHER: <PUBLISHER> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<KEY:("k"|"K")("e"|"E")("y"|"Y")>
+	|<ENTRY_KEY: <KEY> "=" <INFO_OPEN> (["1"-"9"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+|<VOLUME:("v"|"V")("o"|"O")("l"|"L")("u"|"U")("m"|"M")("e"|"E")>
+	|<ENTRY_VOLUME: <VOLUME> <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+|<NUMBER:("n"|"N")("u"|"U")("m"|"M")("b"|"B")("e"|"E")("r"|"R")>
+	|<ENTRY_NUMBER: <NUMBER> <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+|<SERIES:("s"|"S")("e"|"E")("r"|"R")("i"|"I")("e"|"E")("s"|"S")>
+	|<ENTRY_SERIES: <SERIES> <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+|<ADDRESS:("a"|"A")("d"|"D")("d"|"D")("r"|"R")("e"|"E")("s"|"S")("s"|"S")>
+	|<ENTRY_ADDRESS: <ADDRESS> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<EDITION:("e"|"E")("d"|"D")("i"|"I")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
+	|<ENTRY_EDITION: <EDITION> <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+|<MONTH:("m"|"M")("o"|"O")("n"|"N")("t"|"T")("h"|"H")>
+	|<ENTRY_MONTH: <MONTH> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<NOTE:("n"|"N")("o"|"O")("t"|"T")("e"|"E")>
+	|<ENTRY_NOTE: <NOTE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<ANNOTE:("a"|"A")("n"|"N")("n"|"N")("o"|"O")("t"|"T")("e"|"E")>
+	|<ENTRY_ANNNOTE: <ANNOTE> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
+|<PAGES:("p"|"P")("a"|"A")("g"|"G")("e"|"E")("s"|"S")>
+	|<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+|<JOURNAL:("j"|"J")("o"|"O")("u"|"U")("r"|"R")("n"|"N")("a"|"A")("l"|"L")>
+	|<ENTRY_JOURNAL: <JOURNAL> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
+|<ORGANIZATION:("o"|"O")("r"|"R")("g"|"G")("a"|"A")("n"|"N")("i"|"I")("z"|"Z")("a"|"A")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
+	|<ENTRY_ORGANIZATION: <ORGANIZATION> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >   
+|<BOOKTITLE:("b"|"B")("o"|"O")("o"|"O")("k"|"K")("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
+	|<ENTRY_BOOKTITLE: <BOOKTITLE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<EDITOR:("e"|"E")("d"|"D")("i"|"I")("t"|"T")("o"|"O")("r"|"R")>
+	|<ENTRY_EDITOR: <EDITOR> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<SCHOOL:("s"|"S")("c"|"C")("h"|"H")("o"|"O")("o"|"O")("l"|"L")>
+	|<ENTRY_SCHOOL: <SCHOOL> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<TYPE:("t"|"T")("y"|"Y")("p"|"P")("e"|"E")>
+	|<ENTRY_TYPE: <TYPE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<HOWPUBLISHED:("h"|"H")("o"|"O")("w"|"W")("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("d"|"D")>
+	|<ENTRY_HOWPUBLISHED: <HOWPUBLISHED> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+|<URL:("u"|"U")("r"|"R")("l"|"L")>  
+	|<ENTRY_URL:  <URL> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
 	//===========================================
 	//DEFINIÇOES BASICAS
 	//===========================================
@@ -140,6 +159,7 @@ void Start() : {Token t1;}
 
 void Reference() : {Token t1; Token t2;}
 {
+try{
 	(<START_ITEM>
 	|{//start item missing
 	Token taux = getToken(0);
@@ -160,9 +180,16 @@ void Reference() : {Token t1; Token t2;}
 	catch (ParseException e) {
 	Token te = getToken(0);
     System.out.println("Error(Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined;");// + e.toString());
+	throw e;
 	}
 	
 	CloseItem()
+	}catch (ParseException e) {
+	    Token t;
+    do {
+      t = getNextToken();
+    } while (t.kind != START_ITEM && t.kind != END_ITEM);
+	}
 }
 
 void OpenItem(Token t1) : {}

@@ -9,24 +9,45 @@ import java.util.Comparator;
 public class Exp1 {
 
 static java.util.List<Item> items;
+//static java.util.List<String> crossRef;
 
 public static void main(String args[]) throws ParseException {
 
-
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 //inicializaçao da lista de items a ser guardados
 items = new java.util.ArrayList<Item>();
 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//send stuff to parser
 //receber do teclado
 Exp1 parser = new Exp1(System.in);
 try{
 parser.Start();
 }catch(ParseException e){}
-
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 //order stuff
 if (true)//create a token later for ordering stuff
 java.util.Collections.sort(items, new ItemAutorNameComparator("author"));
-
-//save file
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//get infos (1st passage on "tree")
+//get crossrefs
+for(int i = 0; i<items.size(); i++)
+{
+	boolean missing=true;
+	String cref = items.get(i).getEntry("crossref");
+	if (!cref.equals("?"))
+	{
+	for(int j = 0; j<items.size(); j++)
+		if ( items.get(j).id.equals(cref))
+		{
+			items.get(i).crossref = items.get(j);
+			missing=false;
+		}
+	if (missing) System.out.println("Item <" + items.get(i).id +"> has a not found reference <"+ cref +">");
+	}
+}
+//= = = = = = = = = = = = = = = = =  = = = = = = = = = = = = = = = = = =
+//check more stuff and export 2 file (2nd passage on tree)
 	try{
 	java.io.PrintWriter out = new java.io.PrintWriter("biblio.html");
 	
@@ -41,8 +62,11 @@ java.util.Collections.sort(items, new ItemAutorNameComparator("author"));
 	out.println("<body>\n");
 	for(int i = 0; i<items.size(); i++)
 	{
+		//check item's mandatory entrie
+		items.get(i).validateItemNonOptionalFields();
+		//export item to output file
 		items.get(i).save2HTML(out);
-		//debug:System.out.println(items.get(i).id);
+		// /*debug:*/System.out.println(items.get(i).id);
 	}
 	out.println("</body>\n");
 	out.println("</html>");
@@ -76,7 +100,31 @@ TOKEN:
 	|<T_PROCEEDINGS: "proceedings" >
 
 	//===========================================
-	//DEFINIR ENTRIES
+	//GENERAL ENTRIES
+	//===========================================
+|<CROSSREF:("c"|"C")("r"|"R")("o"|"O")("s"|"S")("s"|"S")("r"|"R")("e"|"E")("f"|"F")>
+	|<ENTRY_CROSSREF: <CROSSREF> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+|<KEYWORDS:("k"|"K")("e"|"E")("y"|"Y")("w"|"W")("o"|"O")("r"|"R")("d"|"D")("s"|"S")>
+	|<ENTRY_KEYWORDS: <KEYWORDS> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+|<FILE:("f"|"F")("i"|"I")("l"|"L")("e"|"E")>
+	|<ENTRY_FILE: <FILE> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+|<DOI:("d"|"D")("o"|"O")("i"|"I")>
+	|<ENTRY_DOI: <DOI> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+|<URL:("u"|"U")("r"|"R")("l"|"L")>  
+	|<ENTRY_URL:  <URL> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
+|<COMMENT:("c"|"C")("o"|"O")("m"|"M")("m"|"M")("e"|"E")("n"|"N")("t"|"T")>
+	|<ENTRY_COMMENT: <COMMENT> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE> >
+|<OWNER:("o"|"O")("w"|"W")("n"|"N")("e"|"E")("r"|"R")>
+	|<ENTRY_OWNER: <OWNER> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE> >
+|<TIMESTAMP:("t"|"T")("i"|"I")("m"|"M")("e"|"E")("s"|"S")("t"|"T")("a"|"A")("m"|"M")("p"|"P")>
+	|<ENTRY_TIMESTAMP: <TIMESTAMP> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = = = = == = = = = = = = = = 
+|<ABSTRACT:("a"|"A")("b"|"B")("s"|"S")("t"|"T")("r"|"R")("a"|"A")("c"|"C")("t"|"T")>
+	|<ENTRY_ABSTRACT: <ABSTRACT> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+|<REVIEW:("r"|"R")("e"|"E")("v"|"V")("i"|"I")("e"|"E")("w"|"W")>
+	|<ENTRY_REVIEW: <REVIEW> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
+	//===========================================
+	//ENTRIES
 	//===========================================
 |<AUTHOR: ("a"|"A")("u"|"U")("t"|"T")("h"|"H")("o"|"O")("r"|"R") >
 	|<ENTRY_AUTHOR: <AUTHOR> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
@@ -120,8 +168,7 @@ TOKEN:
 	|<ENTRY_TYPE: <TYPE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
 |<HOWPUBLISHED:("h"|"H")("o"|"O")("w"|"W")("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("d"|"D")>
 	|<ENTRY_HOWPUBLISHED: <HOWPUBLISHED> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
-|<URL:("u"|"U")("r"|"R")("l"|"L")>  
-	|<ENTRY_URL:  <URL> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
+
 	//===========================================
 	//DEFINIÇOES BASICAS
 	//===========================================

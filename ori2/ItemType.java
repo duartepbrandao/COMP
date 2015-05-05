@@ -1,1 +1,22 @@
-public enum ItemType{book,article,misc,manual,phdThesis,proceedings,masterThesis,error};
+public enum ItemType{
+	article,
+	book,
+	booklet,
+	conference,
+	electronic,
+	inbook,
+	incollection,
+	inproceedings,
+	manual,
+	masterthesis,
+	misc,
+	other,
+	patent,
+	periodical,
+	phdthesis,
+	proceedings,
+	standard,
+	techreport,
+	unpublished,
+	error
+}

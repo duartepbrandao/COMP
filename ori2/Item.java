@@ -3,6 +3,8 @@ ItemType type;
 String id;
 java.util.List<String>  entries;
 
+public Item crossref;
+
 public Item(String _type, String _id)
 {
 	id = _id;
@@ -12,11 +14,59 @@ public Item(String _type, String _id)
 	}catch(Exception e){
 	type=ItemType.error;
 	}
-
 	
 	entries = new java.util.ArrayList<String>();
+	
+	crossref = null;
 }
 
+
+public boolean check4Entry(String[] ent)
+{
+	boolean ret = true;
+	for(int j = 0 ; j<ent.length;j++)
+	{
+		boolean doesNotHave=true;
+		for(int i = 0; i<entries.size() ;i++)
+			doesNotHave &= !entries.get(i).substring(0,entries.get(i).indexOf("=")).equals(ent[j]);//indexOf(ent[j]) == -1);
+		
+		if (doesNotHave) 
+		{
+			ret = false;
+			System.out.println("Warning:Item <" + id +"> is missing mandatory entry:" + ent[j]);
+		}
+	}
+	return ret;
+}
+
+
+public boolean validateItemNonOptionalFields()
+{
+	switch(type)
+	{
+	case article:return check4Entry(TypeMandatoryEntries.nonOptional_article); 
+	case book:return check4Entry( TypeMandatoryEntries.nonOptional_book);
+	case booklet:return check4Entry( TypeMandatoryEntries.nonOptional_booklet);
+	case conference: check4Entry( TypeMandatoryEntries.nonOptional_conference);
+	case electronic: return true; 
+ 	case inbook: return check4Entry(TypeMandatoryEntries.nonOptional_inbook);
+	case incollection: return check4Entry( TypeMandatoryEntries.nonOptional_incollection);
+	 case inproceedings: return check4Entry(TypeMandatoryEntries.nonOptional_inproceedings);
+	 case manual: return check4Entry(TypeMandatoryEntries.nonOptional_manual);
+	 case masterthesis: return check4Entry(TypeMandatoryEntries.nonOptional_masterthesis);
+	 case misc: return true;
+	 case other: return true;
+	 case patent: return check4Entry(TypeMandatoryEntries.nonOptional_patent);
+	 case periodical: return check4Entry(TypeMandatoryEntries.nonOptional_periodical);
+	 case phdthesis: return check4Entry(TypeMandatoryEntries.nonOptional_phdthesis);
+	 case proceedings: return check4Entry(TypeMandatoryEntries.nonOptional_proceedings);
+	 case standard: return check4Entry(TypeMandatoryEntries.nonOptional_standard);
+	 case techreport: return check4Entry(TypeMandatoryEntries.nonOptional_techreport);
+	 case unpublished: return check4Entry(TypeMandatoryEntries.nonOptional_unpublished);
+		default: return true;
+	}
+	//return true;
+}
 
 	public void addEntry(String entry)
 {
@@ -94,7 +144,7 @@ switch(type)
 			+"(" + getEntry("year") + ")");
 			break;
 
-			case phdThesis:
+			case phdthesis:
 			out.println(
 			getEntry("author")
 			+"(" + getEntry("year") + ")"
@@ -119,7 +169,7 @@ switch(type)
 			"<i>"+getEntry("title",true)+"</i>");
 			break;
 			
-			case masterThesis:
+			case masterthesis:
 			out.println(
 			getEntry("author")
 			+"(" + getEntry("year") + ")"

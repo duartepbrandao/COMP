@@ -5,6 +5,7 @@
 
 PARSER_BEGIN(Exp1)
 import java.util.Comparator;
+import java.io.InputStream;
 // código Java que invoca o parser
 public class Exp1 {
 
@@ -20,10 +21,14 @@ items = new java.util.ArrayList<Item>();
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 //send stuff to parser
 //receber do teclado
-Exp1 parser = new Exp1(System.in);
+//String input = readFile("test.txt", StandardCharsets.UTF_8);
+try{
+java.io.InputStream input = new java.io.FileInputStream("test.txt");
+Exp1 parser = new Exp1(input);//System.in);
 try{
 parser.Start();
 }catch(ParseException e){}
+}catch(Exception e){ System.out.println("FAILED TO READ FILE"); return; }
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 //order stuff
 if (true)//create a token later for ordering stuff
@@ -81,7 +86,7 @@ PARSER_END(Exp1)
 // símbolos que não devem ser considerados na análise
 SKIP :
 {
- " " | "\t" | "\r"
+ " " | "\t" | "\r" | "\n"
 }
 // definição dos tokens (símbolos terminais)
 TOKEN:
@@ -129,7 +134,7 @@ TOKEN:
 |<AUTHOR: ("a"|"A")("u"|"U")("t"|"T")("h"|"H")("o"|"O")("r"|"R") >
 	|<ENTRY_AUTHOR: <AUTHOR> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
 |<TITLE:("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
-	|<ENTRY_TITLE:  <TITLE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+	|<ENTRY_TITLE:  <TITLE> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
 |<YEAR:("y"|"Y")("e"|"E")("a"|"A")("r"|"R")>
 	|<ENTRY_YEAR: <YEAR> "=" <INFO_OPEN> ["1"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] <INFO_CLOSE> >
 |<PUBLISHER:("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("r"|"R")>
@@ -153,13 +158,13 @@ TOKEN:
 |<ANNOTE:("a"|"A")("n"|"N")("n"|"N")("o"|"O")("t"|"T")("e"|"E")>
 	|<ENTRY_ANNNOTE: <ANNOTE> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> > // VERIFICAR!!!!!!!!!
 |<PAGES:("p"|"P")("a"|"A")("g"|"G")("e"|"E")("s"|"S")>
-	|<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* <INFO_CLOSE> >
+	|<ENTRY_PAGES: "pages" <INFO_OPEN> ["1"-"9"] (["0"-"9"])* ("-" ["1"-"9"] (["0"-"9"])*)? <INFO_CLOSE> >
 |<JOURNAL:("j"|"J")("o"|"O")("u"|"U")("r"|"R")("n"|"N")("a"|"A")("l"|"L")>
 	|<ENTRY_JOURNAL: <JOURNAL> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
 |<ORGANIZATION:("o"|"O")("r"|"R")("g"|"G")("a"|"A")("n"|"N")("i"|"I")("z"|"Z")("a"|"A")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
 	|<ENTRY_ORGANIZATION: <ORGANIZATION> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >   
 |<BOOKTITLE:("b"|"B")("o"|"O")("o"|"O")("k"|"K")("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
-	|<ENTRY_BOOKTITLE: <BOOKTITLE> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
+	|<ENTRY_BOOKTITLE: <BOOKTITLE> "=" <INFO_OPEN> (~["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
 |<EDITOR:("e"|"E")("d"|"D")("i"|"I")("t"|"T")("o"|"O")("r"|"R")>
 	|<ENTRY_EDITOR: <EDITOR> "=" <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
 |<SCHOOL:("s"|"S")("c"|"C")("h"|"H")("o"|"O")("o"|"O")("l"|"L")>
@@ -180,6 +185,8 @@ TOKEN:
 
 	|<INFO_OPEN: "{" | "\"" >
 	|<INFO_CLOSE: "}" | "\"" >
+	
+	//|<ANY_SYMBOLS_ENTRY:(~["{","}","\"","\n","@"])+>
 	//|<NOT_OPEN_ITEM: (~["{","@","\n"," "])+ >
 	//|<NOT_END_ITEM: (~["}","@","\n"," "])+ >
 	
@@ -191,7 +198,7 @@ TOKEN:
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
-	(Reference())+ "\n"//mudar p/ <EOF> + tarde
+	(Reference())+  <EOF>//"\n"//mudar p/ <EOF> + tarde
 }
 
 

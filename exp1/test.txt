@@ -1,0 +1,8 @@
+
+## title  
+
+@book{id1,title="example1",crossref="id4"}
+@book{id2,title="example2",croos}
+@book{id5,title="example5\^e",crossref="id99"}
+@book{id4,title="example4",url="www.dood.nnn"}
+@book{id3,title="example3"}

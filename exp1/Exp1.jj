@@ -6,6 +6,7 @@
 PARSER_BEGIN(Exp1)
 import java.util.Comparator;
 import java.io.InputStream;
+import java.util.Scanner;
 // código Java que invoca o parser
 public class Exp1 {
 
@@ -15,26 +16,29 @@ static String order_token;
 
 public static void main(String args[]) throws ParseException {
 
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //inicializaçao da lista de items a ser guardados
 items = new java.util.ArrayList<Item>();
 order_token="";
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //send stuff to parser
 //receber do teclado
 //String input = readFile("test.txt", StandardCharsets.UTF_8);
 try{
-java.io.InputStream input = new java.io.FileInputStream("test.txt");
+	System.out.print("Enter the file name:");
+	Scanner userInput = new Scanner(System.in);
+	String location = userInput.next();
+java.io.InputStream input = new java.io.FileInputStream(location);
 Exp1 parser = new Exp1(input);//System.in);
 try{
 parser.Start();
 }catch(ParseException e){}
 }catch(Exception e){ System.out.println("FAILED TO READ FILE"); return; }
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //order stuff
 if (order_token!="")//create a token later for ordering stuff
 java.util.Collections.sort(items, new ItemComparator(order_token));
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //get infos (1st passage on "tree")
 //get crossrefs
 for(int i = 0; i<items.size(); i++)
@@ -56,11 +60,11 @@ for(int i = 0; i<items.size(); i++)
 //check more stuff and export 2 file (2nd passage on tree)
 	try{
 	java.io.PrintWriter out = new java.io.PrintWriter("biblio.html");
-	
+
 	out.println("<!DOCTYPE html>");
 	out.println("<html>");
-	
-/*	
+
+/*
 <head>
   <title>Page Title</title>
 </head>
@@ -93,7 +97,7 @@ SKIP :
 TOKEN:
 {
 	<ORDER_SIGN: "##" >:ORDER_TOKENS
-	
+
 	//===========================================
 	//DEFINIR TIPOS
 	//===========================================
@@ -117,7 +121,7 @@ TOKEN:
 	|<ENTRY_FILE: <FILE> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
 |<DOI:("d"|"D")("o"|"O")("i"|"I")>
 	|<ENTRY_DOI: <DOI> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
-|<URL:("u"|"U")("r"|"R")("l"|"L")>  
+|<URL:("u"|"U")("r"|"R")("l"|"L")>
 	|<ENTRY_URL:  <URL> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
 |<COMMENT:("c"|"C")("o"|"O")("m"|"M")("m"|"M")("e"|"E")("n"|"N")("t"|"T")>
 	|<ENTRY_COMMENT: <COMMENT> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE> >
@@ -125,7 +129,7 @@ TOKEN:
 	|<ENTRY_OWNER: <OWNER> "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE> >
 |<TIMESTAMP:("t"|"T")("i"|"I")("m"|"M")("e"|"E")("s"|"S")("t"|"T")("a"|"A")("m"|"M")("p"|"P")>
 	|<ENTRY_TIMESTAMP: <TIMESTAMP> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = = = = == = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = = = = == = = = = = = = = =
 |<ABSTRACT:("a"|"A")("b"|"B")("s"|"S")("t"|"T")("r"|"R")("a"|"A")("c"|"C")("t"|"T")>
 	|<ENTRY_ABSTRACT: <ABSTRACT> "=" <INFO_OPEN> (["a"-"z","A"-"Z","0"-"9"])+ <INFO_CLOSE> >
 |<REVIEW:("r"|"R")("e"|"E")("v"|"V")("i"|"I")("e"|"E")("w"|"W")>
@@ -164,7 +168,7 @@ TOKEN:
 |<JOURNAL:("j"|"J")("o"|"O")("u"|"U")("r"|"R")("n"|"N")("a"|"A")("l"|"L")>
 	|<ENTRY_JOURNAL: <JOURNAL> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
 |<ORGANIZATION:("o"|"O")("r"|"R")("g"|"G")("a"|"A")("n"|"N")("i"|"I")("z"|"Z")("a"|"A")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
-	|<ENTRY_ORGANIZATION: <ORGANIZATION> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >   
+	|<ENTRY_ORGANIZATION: <ORGANIZATION> <INFO_OPEN> (["a"-"z","A"-"Z"])+ <INFO_CLOSE> >
 |<BOOKTITLE:("b"|"B")("o"|"O")("o"|"O")("k"|"K")("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
 	|<ENTRY_BOOKTITLE: <BOOKTITLE> "=" <INFO_OPEN> (~["a"-"z","A"-"Z"])+ <INFO_CLOSE>  >
 |<EDITOR:("e"|"E")("d"|"D")("i"|"I")("t"|"T")("o"|"O")("r"|"R")>
@@ -187,11 +191,11 @@ TOKEN:
 
 	|<INFO_OPEN: "{" | "\"" >
 	|<INFO_CLOSE: "}" | "\"" >
-	
+
 	//|<ANY_SYMBOLS_ENTRY:(~["{","}","\"","\n","@"])+>
 	//|<NOT_OPEN_ITEM: (~["{","@","\n"," "])+ >
 	//|<NOT_END_ITEM: (~["}","@","\n"," "])+ >
-	
+
 }
 
 <ORDER_TOKENS> SKIP :
@@ -214,7 +218,7 @@ void Order() : {Token t1;}
 	try {
 	<ORDER_SIGN> t1=<ORDER_ENTRY> { order_token = t1.image.toLowerCase(); }
 	}
-	catch (ParseException e) { 
+	catch (ParseException e) {
 	 System.out.println("Warning:Order TAG badly defined. use ## followed by an entry name;");
 	}
 }
@@ -236,7 +240,7 @@ try{
 	Token taux = getToken(0);
 	System.out.println("Warning:Item not opening with '@'. Immediately before line " + taux.beginLine + ",column " +  taux.beginColumn +";");}
 	)
-  
+
   try{
   	(//listing ok
 	(t1=<T_ARTICLE> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
@@ -244,7 +248,7 @@ try{
 	|(t1=<T_MANUAL> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
 	|(t1=<T_MASTERSTHESIS> OpenItem(t1) t2=checkID() {items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
 	|(t1=<T_MISC> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)  )
-	|(t1=<T_PHDTHESIS> OpenItem(t1)     t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) ) 
+	|(t1=<T_PHDTHESIS> OpenItem(t1)     t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) )
 	|(t1=<T_PROCEEDINGS> OpenItem(t1)   t2=checkID() {items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
 	)//end of listing ok
 	}
@@ -253,7 +257,7 @@ try{
     System.out.println("Error(Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined;");// + e.toString());
 	throw e;
 	}
-	
+
 	CloseItem()
 	}catch (ParseException e) {
 	    Token t;
@@ -270,7 +274,7 @@ try{
 	}
 catch (ParseException e) {
     System.out.println("Warning:"+t1.image + " not opened at line " + t1.endLine + ", column " + t1.endColumn + ";");// + e.toString());
-	}	
+	}
 }
 
 Token checkID() : { Token t1; }
@@ -296,23 +300,23 @@ void GeneralEntry() : {Token t1;}
 {
 	 (t1=<ENTRY_CROSSREF>|t1=<ENTRY_KEYWORDS>|t1=<ENTRY_FILE>
 	 |t1=<ENTRY_DOI>|t1=<ENTRY_URL>|t1=<ENTRY_COMMENT>|t1=<ENTRY_OWNER>|t1=<ENTRY_TIMESTAMP>)
-	 {items.get(items.size()-1).addEntry(t1.image); } 
+	 {items.get(items.size()-1).addEntry(t1.image); }
 }
 
-//= = = = = = = == = = = = = = == = = = == = = == = = = = = == = = = = == = = = = = == 
+//= = = = = = = == = = = = = = == = = = == = = == = = = = = == = = = = == = = = = = ==
 //ENTRIES PRODUCTIONS
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 void Article(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> ArticleEntry(type,id) [Article(type,id)] 
+	<INFO_SEPARATOR> ArticleEntry(type,id) [Article(type,id)]
 }
 void ArticleEntry(String type,String id) : {Token t1;}
 {
 try{
 (
   t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_JOURNAL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> |
-  t1=<ENTRY_PAGES> | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
-  ){items.get(items.size()-1).addEntry(t1.image); } 
+  t1=<ENTRY_PAGES> | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+  ){items.get(items.size()-1).addEntry(t1.image); }
   | GeneralEntry()
 }
 	catch (ParseException e) {
@@ -322,17 +326,17 @@ try{
 }
 void Book(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> BookEntry(type,id) [Book(type,id)] 
+	<INFO_SEPARATOR> BookEntry(type,id) [Book(type,id)]
 }
 void BookEntry(String type,String id):{Token t1;}
 {
 try{
 (
  t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_YEAR> | t1=<ENTRY_PUBLISHER>
- | t1=<ENTRY_KEY> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> 
+ | t1=<ENTRY_KEY> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER>
  | t1=<ENTRY_SERIES> |t1=<ENTRY_ADDRESS> |t1=<ENTRY_EDITION>
- | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
- ) {items.get(items.size()-1).addEntry(t1.image); } 
+ | t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+ ) {items.get(items.size()-1).addEntry(t1.image); }
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
 }
 	catch (ParseException e) {
@@ -343,15 +347,15 @@ try{
 
 void Manual(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> ManualEntry(type,id) [Manual(type,id)] 
+	<INFO_SEPARATOR> ManualEntry(type,id) [Manual(type,id)]
 }
 void ManualEntry(String type,String id) :  {Token t1;}
 {
 try{
 (
   t1=<ENTRY_TITLE> | t1=<ENTRY_KEY> | t1=<ENTRY_AUTHOR> | t1=<ENTRY_ORGANIZATION> | t1=<ENTRY_ADDRESS> | t1=<ENTRY_EDITION> |
-                  t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
-){items.get(items.size()-1).addEntry(t1.image); } 
+                  t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+){items.get(items.size()-1).addEntry(t1.image); }
 | GeneralEntry()
 }
 	catch (ParseException e) {
@@ -362,15 +366,15 @@ try{
 
 void MasterThesis(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> MasterThesisEntry(type,id) [MasterThesis(type,id)] 
+	<INFO_SEPARATOR> MasterThesisEntry(type,id) [MasterThesis(type,id)]
 }
 void MasterThesisEntry(String type,String id): {Token t1;}
 {
 try{
 (
   t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_SCHOOL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_TYPE> | t1=<ENTRY_ADDRESS> |
-                       t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
-){items.get(items.size()-1).addEntry(t1.image); } 
+                       t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+){items.get(items.size()-1).addEntry(t1.image); }
 | GeneralEntry()
 }
 	catch (ParseException e) {
@@ -381,15 +385,15 @@ try{
 
 void Misc(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> MiscEntry(type,id) [Misc(type,id)] 
+	<INFO_SEPARATOR> MiscEntry(type,id) [Misc(type,id)]
 }
 void MiscEntry(String type,String id): {Token t1;}
 {
 try{
 (
- t1=<ENTRY_KEY> | t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_HOWPUBLISHED> | t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> | 
-            t1=<ENTRY_ANNNOTE> 
-){items.get(items.size()-1).addEntry(t1.image); } 
+ t1=<ENTRY_KEY> | t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_HOWPUBLISHED> | t1=<ENTRY_MONTH> | t1=<ENTRY_YEAR> | t1=<ENTRY_NOTE> |
+            t1=<ENTRY_ANNNOTE>
+){items.get(items.size()-1).addEntry(t1.image); }
 | GeneralEntry()
 }
 	catch (ParseException e) {
@@ -400,15 +404,15 @@ try{
 
 void PhdThesis(String type,String id) : {Token t1;}
 {
-	<INFO_SEPARATOR> PhdThesisEntry(type,id) [PhdThesis(type,id)] 
+	<INFO_SEPARATOR> PhdThesisEntry(type,id) [PhdThesis(type,id)]
 }
 void PhdThesisEntry(String type,String id): {Token t1;}
 {
 try{
 (
   t1=<ENTRY_AUTHOR> | t1=<ENTRY_TITLE> | t1=<ENTRY_SCHOOL> | t1=<ENTRY_YEAR> | t1=<ENTRY_KEY> |t1=<ENTRY_TYPE> | t1=<ENTRY_ADDRESS> |
-                    t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
-){items.get(items.size()-1).addEntry(t1.image); } 
+                    t1=<ENTRY_MONTH> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+){items.get(items.size()-1).addEntry(t1.image); }
 | GeneralEntry()
 }
 	catch (ParseException e) {
@@ -425,11 +429,11 @@ void ProceedingsEntry(String type,String id): {Token t1;}
 {
 try{
 (
- t1=<ENTRY_TITLE> | t1=<ENTRY_KEY> | t1=<ENTRY_BOOKTITLE> | t1=<ENTRY_EDITOR> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> | t1=<ENTRY_SERIES> | 
-             t1=<ENTRY_ADDRESS> | t1=<ENTRY_MONTH> | t1=<ENTRY_ORGANIZATION> | t1=<ENTRY_PUBLISHER> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE> 
-			
+ t1=<ENTRY_TITLE> | t1=<ENTRY_KEY> | t1=<ENTRY_BOOKTITLE> | t1=<ENTRY_EDITOR> | t1=<ENTRY_VOLUME> | t1=<ENTRY_NUMBER> | t1=<ENTRY_SERIES> |
+             t1=<ENTRY_ADDRESS> | t1=<ENTRY_MONTH> | t1=<ENTRY_ORGANIZATION> | t1=<ENTRY_PUBLISHER> | t1=<ENTRY_NOTE> | t1=<ENTRY_ANNNOTE>
+
 ){items.get(items.size()-1).addEntry(t1.image); }
-| GeneralEntry() 
+| GeneralEntry()
 }
 	catch (ParseException e) {
 	Token te = getToken(1);

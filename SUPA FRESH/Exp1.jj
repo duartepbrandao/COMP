@@ -920,7 +920,7 @@ catch (ParseException e) {
 	 try{
   t1=<STRING_TAG>
   <STRING_EQUAL>
-  (t2=<INFO_ENTRY1>|t2=<INFO_ENTRY2>) { Item.subs.add(t1.image,t2.image.substring(0,t2.image.length()-1) ); }
+  (t2=<INFO_ENTRY1>|t2=<INFO_ENTRY2>) { Item.subs.add(t1.image,t2.image.substring(1,t2.image.length()-1) ); }
   //System.out.println("debug str:" + t1.image + "---" + t2.image);}
 	 }
 	 catch (ParseException e) {

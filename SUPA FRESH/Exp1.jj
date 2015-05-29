@@ -13,6 +13,7 @@ public class Exp1 {
 static java.util.List<Item> items;
 static String order_token;
 //static java.util.List<String> crossRef;
+static boolean ocurred_error_inside_item_during_parsing=false;//what it says...
 
 public static void main(String args[]) throws ParseException {
 
@@ -33,6 +34,8 @@ java.io.InputStream input = new java.io.FileInputStream(location);
 Exp1 parser = new Exp1(input);//System.in);
 System.out.println("___________________________________________________");
 System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
+System.out.println("notifications format-> type (Line|Column): error description");
+System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
 try{
 parser.Start();
 }catch(ParseException e){}
@@ -46,7 +49,7 @@ java.util.Collections.sort(items, new ItemComparator(order_token));
 System.out.println("___________________________________________________");
 System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
 System.out.println("The compiler will try to discard errors mentioned above and compile the rest");
-System.out.println("The warnings and errors below are relative to the parts that where not discarded");
+System.out.println("The warnings and errors below are relative to the parts that were not discarded");
 System.out.println("---------------------------------------------------");
 for(int i = 0; i<items.size(); i++)
 {
@@ -144,12 +147,12 @@ SKIP :
 // definição dos tokens (símbolos terminais)
 TOKEN:
 {
-	<ORDER_SIGN: "##" >:ORDER_TOKENS
+	//<ORDER_SIGN: "##" >:ORDER_TOKENS
 
 	//===========================================
 	//DEFINIR TIPOS
 	//===========================================
-	|<T_ARTICLE:("a"|"A")("r"|"R")("t"|"T")("i"|"I")("c"|"C")("l"|"L")("e"|"E")>
+	<T_ARTICLE:("a"|"A")("r"|"R")("t"|"T")("i"|"I")("c"|"C")("l"|"L")("e"|"E")>
 	|<T_BOOK:("b"|"B")("o"|"O")("o"|"O")("k"|"K")>
 	|<T_BOOKLET:("b"|"B")("o"|"O")("o"|"O")("k"|"K")("l"|"L")("e"|"E")("t"|"T")>
 	|<T_CONFERENCE:("c"|"C")("o"|"O")("n"|"N")("f"|"F")("e"|"E")("r"|"R")("e"|"E")("n"|"N")("c"|"C")("e"|"E")>
@@ -232,13 +235,13 @@ TOKEN:
 	//===========================================
 	//DEFINIÇOES BASICAS
 	//===========================================
-	|<ID: (["a"-"z","A"-"Z","0"-"9"])+>
+	|<ID: (["a"-"z","A"-"Z","0"-"9","_"])+>
 	|<INFO_SEPARATOR: "," >
 	|<ENTRY_ASSIGN_OPERATOR: "=" >:INFO_ENTRY_STATE
 	|<START_ITEM: "@" >
 	|<OPEN_ITEM: "{" >
 	|<END_ITEM: "}" >//or INFOCLOSE2
-
+	|<NOT_OPEN_ITEM: ~["@"]>
 	//|<INFO_OPEN: "{" | "\"" >
 	//|<INFO_CLOSE: "}" | "\"" >
 
@@ -270,11 +273,11 @@ TOKEN:
  |<STRING_ENTRY2: (~["{","}"])+ "}">:DEFAULT
  }*/
  
-<ORDER_TOKENS> SKIP :
+/*<ORDER_TOKENS> SKIP :
 {
  " " | "\t" | "\r" | "\n"
 }
-<ORDER_TOKENS> TOKEN: { <ORDER_ENTRY: (["a"-"z","A"-"Z","0"-"9"])+>  :DEFAULT }
+<ORDER_TOKENS> TOKEN: { <ORDER_ENTRY: (["a"-"z","A"-"Z","0"-"9"])+>  :DEFAULT }*/
 
 //<EXCEPTION_T> TOKEN: {:DEFAULT }//\n serve como eof temporariamente
 
@@ -287,15 +290,37 @@ TOKEN:
 |<INFO_ENTRY_NUM: (["0"-"9"])+ >:DEFAULT
 |<INFO_ENTRY1:"\"" ((~["{","}","\""])|"{\"}")+ "\"" >:DEFAULT 
 |<INFO_ENTRY2:"{" (~["{","}"])+ "}" >:DEFAULT
+|<INFO_ENTRY_NONE: ~[] >:DEFAULT
  }
 
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
-	[Order()]  (StringOperatorEntry()|Reference())+  <EOF>//"\n"//mudar p/ <EOF> + tarde
+	/*[Order()]*/  
+	(StringOperatorEntry()
+	|Reference()
+	|NoItem()
+	)+
+	<EOF>
 }
 
-void Order() : {Token t1;}
+void NoItem() : {}
+{
+	<NOT_OPEN_ITEM> { 
+
+	Token ts = getToken(0);
+	//Token te = getToken(0);
+	Token tn = getToken(1);
+	  while (tn.kind != START_ITEM &&tn.kind!=EOF) {
+    /* te=*/getNextToken(); tn = getToken(1);
+	  }
+	  //if(tn.kind==START_ITEM)
+	System.out.println("Error:Text outside an item from (" + ts.beginLine + "|" +  ts.beginColumn +") to (" +tn.beginLine + "|" +  tn.beginColumn + ") will be ignored;");
+	
+	}
+}
+
+/*void Order() : {Token t1;}
 {
 	try {
 	<ORDER_SIGN> t1=<ORDER_ENTRY> { order_token = t1.image.toLowerCase(); }
@@ -303,7 +328,7 @@ void Order() : {Token t1;}
 	catch (ParseException e) {
 	 System.out.println("Warning:Order TAG badly defined. use ## followed by an entry name;");
 	}
-}
+}*/
 
 /*catch (ParseException e) {
 	Token taux = getNextToken();
@@ -316,37 +341,53 @@ void Order() : {Token t1;}
 
 void Reference() : {Token t1; Token t2;}
 {
-try{
-	(<START_ITEM>
-	|{//start item missing
+//try{
+	//[(<START_ITEM>)]
+	try{
+	(<START_ITEM>) 
+	}catch (ParseException e){
 	Token taux = getToken(0);
-	System.out.println("Warning:Item not opening with '@'. Immediately before line " + taux.beginLine + ",column " +  taux.beginColumn +";");}
-	)
+	System.out.println("Warning:Item not opening with '@'. At line " + taux.beginLine + ",column " +  taux.beginColumn +";");
+	}
+	
 
   try{
   	(//listing ok
-	(t1=<T_ARTICLE> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
-	|(t1=<T_BOOK> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Book(t1.image,t2.image) )
-	|(t1=<T_MANUAL> OpenItem(t1)        t2=checkID() {items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
-	|(t1=<T_MASTERTHESIS> OpenItem(t1) t2=checkID() {items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
-	|(t1=<T_MISC> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)  )
-	|(t1=<T_PHDTHESIS> OpenItem(t1)     t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) )
-	|(t1=<T_PROCEEDINGS> OpenItem(t1)   t2=checkID() {items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
+	(t1=<T_ARTICLE> OpenItem(t1)    	    	t2=checkID() {items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
+	|(t1=<T_BOOK> OpenItem(t1)    	    	  	t2=checkID() {items.add(new Item(t1.image,t2.image));} Book(t1.image,t2.image) )
+	|(t1=<T_BOOKLET> OpenItem(t1)          		t2=checkID() {items.add(new Item(t1.image,t2.image));} Booklet(t1.image,t2.image) )
+	|(t1=<T_CONFERENCE> OpenItem(t1)			t2=checkID() {items.add(new Item(t1.image,t2.image));} Conference(t1.image,t2.image) )
+	|(t1=<T_ELECTRONIC> OpenItem(t1)          	t2=checkID() {items.add(new Item(t1.image,t2.image));} Electronic(t1.image,t2.image) )
+	|(t1=<T_INBOOK> OpenItem(t1)    		    t2=checkID() {items.add(new Item(t1.image,t2.image));} Inbook(t1.image,t2.image) )
+	|(t1=<T_INCOLLECTION> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Incollection(t1.image,t2.image) )
+	|(t1=<T_INPROCEEDINGS> OpenItem(t1)         t2=checkID() {items.add(new Item(t1.image,t2.image));} Inproceedings(t1.image,t2.image) )
+	|(t1=<T_MANUAL> OpenItem(t1)      			t2=checkID() {items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
+	|(t1=<T_MASTERTHESIS> OpenItem(t1)			t2=checkID() {items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
+	|(t1=<T_MISC> OpenItem(t1)          		/*t2=checkID() {items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)*/  )
+	|(t1=<T_OTHER> OpenItem(t1)         		t2=checkID() {items.add(new Item(t1.image,t2.image));} Other(t1.image,t2.image) )
+	|(t1=<T_PATENT> OpenItem(t1)        		t2=checkID() {items.add(new Item(t1.image,t2.image));} Patent(t1.image,t2.image) )
+	|(t1=<T_PERIODICAL> OpenItem(t1)    		t2=checkID() {items.add(new Item(t1.image,t2.image));} Periodical(t1.image,t2.image) )
+	|(t1=<T_PHDTHESIS> OpenItem(t1)     		t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) )
+	|(t1=<T_PROCEEDINGS> OpenItem(t1)   		t2=checkID() {items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
+	|(t1=<T_STANDARD> OpenItem(t1)      		t2=checkID() {items.add(new Item(t1.image,t2.image));} Standard(t1.image,t2.image) )
+	|(t1=<T_TECHREPORT> OpenItem(t1)    		t2=checkID() {items.add(new Item(t1.image,t2.image));} Techreport(t1.image,t2.image) )
+	|(t1=<T_UNPUBLISHED> OpenItem(t1)   		t2=checkID() {items.add(new Item(t1.image,t2.image));} Unpublished(t1.image,t2.image) )
 	)//end of listing ok
 	}
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined;");// + e.toString());
-	throw e;
+    System.out.println("Error  (Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined. Check item type name and bibkey;");// + e.toString());	
+	
+	//throw e;
 	}
 
 	CloseItem()
-	}catch (ParseException e) {
+	/*}catch (ParseException e) {
 	    Token t;
     do {
       t = getNextToken();
     } while (t.kind != START_ITEM && t.kind != END_ITEM);
-	}
+	}*/
 }
 
 void OpenItem(Token t1) : {}
@@ -355,7 +396,15 @@ try{
 	<OPEN_ITEM>
 	}
 catch (ParseException e) {
-    System.out.println("Warning:"+t1.image + " not opened at line " + t1.endLine + ", column " + t1.endColumn + ";");// + e.toString());
+    System.out.println("Error:"+t1.image + " not properly open at (" + t1.endLine + "|" + t1.endColumn + ") or type written wrongly;");// + e.toString());
+	
+	/*Token te = getToken(0);
+	Token tn = getToken(1);
+	  while (te.kind!=OPEN_ITEM && tn.kind != START_ITEM &&tn.kind!=EOF) {
+      te = getNextToken(); tn = getToken(1);
+	  }
+	if(tn.kind==START_ITEM)*/	throw e;
+		
 	}
 }
 
@@ -372,9 +421,14 @@ try{
   <END_ITEM>
   }catch (ParseException e)
   {
-	Token taux = getToken(0);
-	System.out.println("Warning:Not closing item with '}'. At line " + taux.beginLine + ",column " +  taux.beginColumn +";");
-	throw e;
+	  Token te = getToken(0); Token tn = getToken(1);
+	  while (tn.kind != START_ITEM && te.kind != END_ITEM &&tn.kind!=EOF) {
+     te=getNextToken(); tn = getToken(1); // /*debug:*/ System.out.println("_"+te.image + "_"+tn.image);
+	  }
+	  if(te.kind!=END_ITEM)
+	System.out.println("Warning("+ te.beginLine+"|"+  te.beginColumn +"):Not closing item with '}' ;");
+	
+	//throw e;
 	}
 }
 
@@ -384,6 +438,7 @@ try{
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 void info(String s1) : {Token t1;}
 {
+	<ENTRY_ASSIGN_OPERATOR>
 	try{
 		(t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>) {items.get(items.size()-1).addEntry(s1 + "=" + t1.image); }
 		|(t1=<INFO_ENTRY_NUM>) {items.get(items.size()-1).addEntry(s1 + "=\"" + t1.image + "\""); }
@@ -392,41 +447,67 @@ void info(String s1) : {Token t1;}
 		|(t1=<INFO_STRING_TAG>) {items.get(items.size()-1).addEntry(s1 + "=\"" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) + "\""); }
 	}	catch (ParseException e) {
 	Token te = getToken(1);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +") \"" +te.image+"\":Entry value was badly defined;");
+
+    System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): \"" +te.image+"\" - entry value was badly defined;");
 	}
 }
 //===============================================================================
 //GENERAL ENTRY PRODUCTIONS
-
+/*void deadInfo() : {}
+{
+	try{
+	(t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>) 
+		|(t1=<INFO_ENTRY_NUM>) 
+		|(t1=<INFO_STRING_TAG>)
+	}	catch (ParseException e) {throw e;}
+}*/
+void entry_not_valid() : {}
+{
+	{ 
+	Token te = getToken(1);
+	
+	if(te.kind==START_ITEM) throw new ParseException();
+	
+	if(te.image==","|te.image=="}") System.out.println("Warning("+ te.endLine + "|"+ te.endColumn +"): Missing entry.");
+    else System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"): \"" +te.image+"\" - not a valid Entry;");
+	
+	/*doing this would not make possible to get possible next entries
+    while (te.kind != START_ITEM && te.kind != END_ITEM) {
+     getNextToken(); te = getToken(1); //debug System.out.println("_"+t.image + "_"+te.image);
+    } */
+	
+	}
+}
+//- - - - - - - - - - - - - - - - - - - - - -
 void entry_CROSSREF() : {Token t1;} { 
- t1=<CROSSREF> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<CROSSREF>   info(t1.image)  
 	}
 void entry_KEYWORDS() : {Token t1;} { 
- t1=<KEYWORDS> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<KEYWORDS>   info(t1.image)  
 	}
 void entry_FILE() : {Token t1;} { 
- t1=<FILE> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<FILE>   info(t1.image) 
 	}
 void entry_DOI() : {Token t1;} { 
- t1=<DOI> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<DOI>   info(t1.image)  
 	}
 void entry_URL() : {Token t1;} { 
-  t1=<URL> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+  t1=<URL>   info(t1.image) 
 	}
 void entry_COMMENT() : {Token t1;} { 
- t1=<COMMENT> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<COMMENT>   info(t1.image) 
 	}
 void entry_OWNER() : {Token t1;} { 
- t1=<OWNER> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<OWNER>   info(t1.image) 
 	}
 void entry_TIMESTAMP() : {Token t1;} { 
- t1=<TIMESTAMP> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<TIMESTAMP>   info(t1.image)  
 	}
 void entry_ABSTRACT() : {Token t1;} { 
- t1=<ABSTRACT> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<ABSTRACT>   info(t1.image)  
 	}
 void entry_REVIEW() : {Token t1;} { 
- t1=<REVIEW> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<REVIEW>   info(t1.image)  
 	}
 void entry_ANNOTATE() : {Token t1;} { 
  t1=<ANNOTATE> info(t1.image)  // VERIFICAR!!!!!!!!!
@@ -434,13 +515,13 @@ void entry_ANNOTATE() : {Token t1;} {
 //ENTRY PRODUCTIONS
 	}
 void entry_AUTHOR() : {Token t1;} { 
- t1=<AUTHOR> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<AUTHOR>   info(t1.image) 
 	}
 void entry_TITLE() : {Token t1;} { 
-  t1=<TITLE> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+  t1=<TITLE>   info(t1.image)  
 	}
 void entry_PUBLISHER() : {Token t1;} { 
- t1=<PUBLISHER> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<PUBLISHER>   info(t1.image) 
 	}
 void entry_VOLUME() : {Token t1;} { 
  t1=<VOLUME> info(t1.image) 
@@ -452,13 +533,13 @@ void entry_SERIES() : {Token t1;} {
  t1=<SERIES> info(t1.image) 
 	}
 void entry_ADDRESS() : {Token t1;} { 
- t1=<ADDRESS> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<ADDRESS>   info(t1.image) 
 	}
 void entry_EDITION() : {Token t1;} { 
  t1=<EDITION> info(t1.image) 
 	}
 void entry_NOTE() : {Token t1;} { 
- t1=<NOTE> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<NOTE>   info(t1.image) 
 	}
 void entry_PAGES() : {Token t1;} { 
  t1=<PAGES> info(t1.image) 
@@ -470,55 +551,55 @@ void entry_ORGANIZATION() : {Token t1;} {
  t1=<ORGANIZATION> info(t1.image) 
 	}
 void entry_BOOKTITLE() : {Token t1;} { 
- t1=<BOOKTITLE> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<BOOKTITLE>   info(t1.image)  
 	}
 void entry_EDITOR() : {Token t1;} { 
- t1=<EDITOR> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<EDITOR>   info(t1.image)  
 	}
 void entry_SCHOOL() : {Token t1;} { 
- t1=<SCHOOL> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<SCHOOL>   info(t1.image)  
 	}
 void entry_TYPE() : {Token t1;} { 
- t1=<TYPE> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<TYPE>   info(t1.image)  
 	}
 void entry_HOWPUBLISHED() : {Token t1;} { 
- t1=<HOWPUBLISHED> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<HOWPUBLISHED>   info(t1.image)  
 	}
 void entry_LANGUAGE() : {Token t1;} { 
- t1=<LANGUAGE> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<LANGUAGE>   info(t1.image)  
 	}
 void entry_CHAPTER() : {Token t1;} { 
- t1=<CHAPTER> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<CHAPTER>   info(t1.image)  
 	}
 void entry_NATIONALITY() : {Token t1;} { 
- t1=<NATIONALITY> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<NATIONALITY>   info(t1.image)  
 	}
 void entry_ASSIGNEE() : {Token t1;} { 
- t1=<ASSIGNEE> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<ASSIGNEE>   info(t1.image)  
 	}
 void entry_INSTITUTION() : {Token t1;} { 
- t1=<INSTITUTION> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<INSTITUTION>   info(t1.image) 
 	}
 void entry_REVISION() : {Token t1;} { 
- t1=<REVISION> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<REVISION>   info(t1.image) 
 	}
 void entry_YEAR() : {Token t1;} { 
- t1=<YEAR> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<YEAR>   info(t1.image) 
 	}
 void entry_YEARFILED() : {Token t1;} { 
- t1=<YEARFILED> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<YEARFILED>   info(t1.image)  
 	}
 void entry_MONTH() : {Token t1;} { 
- t1=<MONTH> <ENTRY_ASSIGN_OPERATOR> info(t1.image) 
+ t1=<MONTH>   info(t1.image) 
 	}
 void entry_MONTHFILED() : {Token t1;} { 
- t1=<MONTHFILED> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<MONTHFILED>   info(t1.image)  
 	}
 void entry_DAYFILED() : {Token t1;} { 
- t1=<DAYFILED> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<DAYFILED>   info(t1.image)  
 	}
 void entry_DAY() : {Token t1;} { 
- t1=<DAY> <ENTRY_ASSIGN_OPERATOR> info(t1.image)  
+ t1=<DAY>   info(t1.image)  
 }
 
 //============================================================================================
@@ -547,10 +628,11 @@ try{
   entry_PAGES() | entry_MONTH() | entry_NOTE() 
   )
   | GeneralEntry()
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //--------------------------------------------------------
@@ -568,11 +650,12 @@ try{
  | entry_MONTH() | entry_NOTE() 
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
 	System.out.println(e.toString());
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //----------------------------------------------------------------
@@ -591,7 +674,7 @@ try{
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -608,10 +691,11 @@ try{
   entry_ADDRESS()|entry_MONTH()|entry_ORGANIZATION()|entry_PUBLISHER()|entry_NOTE()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -627,10 +711,11 @@ try{
   entry_HOWPUBLISHED()|entry_ORGANIZATION()|entry_ADDRESS()|entry_NOTE()//|entry_URL()|
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -646,10 +731,11 @@ try{
   entry_VOLUME()|entry_NUMBER()|entry_SERIES()|entry_TYPE()|entry_ADDRESS()|entry_EDITION()|entry_MONTH()|entry_NOTE()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -666,10 +752,11 @@ try{
   entry_CHAPTER()|entry_PAGES()|entry_ADDRESS()|entry_EDITION()|entry_MONTH()|entry_NOTE()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -686,10 +773,11 @@ try{
   entry_ADDRESS()|entry_MONTH()|entry_ORGANIZATION()|entry_PUBLISHER()|entry_NOTE()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -705,10 +793,11 @@ try{
                   entry_MONTH() | entry_YEAR() | entry_NOTE()
 )
 | GeneralEntry()
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -724,10 +813,11 @@ try{
                        entry_MONTH() | entry_NOTE() 
 )
 | GeneralEntry()
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -742,10 +832,11 @@ try{
   entry_AUTHOR() | entry_TITLE() | entry_HOWPUBLISHED() | entry_MONTH() | entry_YEAR() | entry_NOTE() 
 )
 | GeneralEntry()
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -757,10 +848,11 @@ void OtherEntry(String type,String id):{}
 {
 try{
 GeneralEntry() 
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -777,10 +869,11 @@ try{
   entry_TYPE()|entry_DAY()|entry_DAYFILED()|entry_MONTH()|entry_MONTHFILED()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -797,10 +890,11 @@ try{
   entry_NUMBER()|entry_ORGANIZATION()|entry_MONTH()|entry_NOTE()//|entry_URL()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -816,10 +910,11 @@ try{
                     entry_MONTH() | entry_NOTE()
 )
 | GeneralEntry()
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -837,10 +932,11 @@ try{
 
 )
 | GeneralEntry()
+ |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -857,10 +953,11 @@ try{
   entry_REVISION()|entry_ADDRESS()|entry_MONTH()|entry_YEAR()|entry_NOTE()//|entry_URL()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -876,10 +973,11 @@ try{
    entry_TYPE()| entry_NUMBER()| entry_ADDRESS()| entry_MONTH()| entry_NOTE()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -895,10 +993,11 @@ try{
     entry_YEAR()|  entry_MONTH()
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
+  |entry_not_valid()
 }
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error(Line:"+ te.endLine + "|Column:"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
+    System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"):Item with <Type:" + type+ "|ID:" +id+"() has an invalid or badly defined entry:" + te.image + ";");
 	}
 }
 //------------------------------------------------------------------
@@ -925,7 +1024,7 @@ catch (ParseException e) {
 	 }
 	 catch (ParseException e) {
 		 System.out.println(e.toString());
-		  System.out.println("Error(Line:"+ t0.endLine + "|Column:"+ t0.endColumn +"): @string is badly defined;");
+		  System.out.println("Error  ("+ t0.endLine + "|"+ t0.endColumn +"): @string is badly defined;");
 	 }
 
 	 try{

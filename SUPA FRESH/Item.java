@@ -191,55 +191,172 @@ try{
 		
 switch(type)
 		{
-			case book:
-			/*ApelidoAutor, NomeAutor and outros? */
-			/*(data),nome livro em italico,publisher*/
+		                // ALGUMA ALTERAÇÃO POR SEREM OPCIONAIS???
+		    case article:
 			out.println(
-			getEntry("author")
-			+"(" + getEntry("year") + ")"
-			+"<i>"+getEntry("title",true)+"</i>"
-			+getEntry("publisher",true)+".");
+			getEntry("author")+"."
+			+"<i>"+getEntry("title")+"</i>"+"."
+			+"<i>"+getEntry("journal")+"</i>"
+			+getEntry("volume",true) 
+			+"(" + getEntry("number") + ")"
+			+ ":"+ getEntry("pages",false,true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			
 			break;
 			
-				case proceedings:
+			case book:
 			out.println(
-		    "<i>"+getEntry("title",true)+"</i>"
-			+"(" + getEntry("year") + ")");
+			getEntry("author")+"."
+			+ getEntry("title") 
+			+ getEntry("volume",true)+"."
+			+ getEntry("publisher",true)
+			+ getEntry("address",true)
+			+ getEntry("edition",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
 			break;
-
-			case phdthesis:
+			
+			case booklet:
 			out.println(
-			getEntry("author")
-			+"(" + getEntry("year") + ")"
-			+"<i>"+getEntry("title",true)+"</i>"
-			+getEntry("school")+"."); // VERIFICAR
+			getEntry("author")+"."
+			+ getEntry("title") + "."
+			+ getEntry("howpublished")
+			+ getEntry("address",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
 			break;
-
-			case misc:
-			//out.println(
-			break;
-
-			case article:
+			
+			case conference:
 			out.println(
-			getEntry("author")
-			+"(" + getEntry("year") + ")"
-			+"<i>"+getEntry("title",true)+"</i>"
-			+"<i>"+getEntry("journal",true)+"</i>");
+			getEntry("author")+"."
+			+ getEntry("title") + "."
+			+ getEntry("editor")
+			+ getEntry("title",true)
+			+ getEntry("volume",true)
+			+ getEntry("pages",true)
+			+ getEntry("address",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("organization")
+			+ getEntry("publisher",true)
+			+ getEntry("note")+".");
 			break;
-
+			
+			case inbook:
+			out.println(
+			getEntry("author")+"."
+			+ getEntry("title") 
+			+ getEntry("volume",true)
+			+ getEntry("chapter",true)
+			+ getEntry("pages",true)+"."
+			+ getEntry("publisher")
+			+ getEntry("address",true)
+			+ getEntry("edition",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			break;
+			
+			case incollection:
+			out.println(
+			getEntry("author")+"."
+			+ getEntry("title") + "."
+			+ getEntry("editor")
+			+ getEntry("title",true)
+			+ getEntry("volume",true)
+			+ getEntry("chapter",true)
+			+ getEntry("pages",true)+"."
+			+ getEntry("publisher")
+			+ getEntry("address",true)+","
+			+ getEntry("edition")
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			break;
+			
+		
 			case manual:
 			out.println(
-			"<i>"+getEntry("title",true)+"</i>");
+			getEntry("author")+"."
+			+"<i>"+getEntry("title")+"</i>"
+			+ getEntry("organization",true)
+			+ getEntry("address",true)
+			+ getEntry("edition",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
 			break;
 			
 			case masterthesis:
 			out.println(
-			getEntry("author")
-			+"(" + getEntry("year") + ")"
-			+"<i>"+getEntry("title",true)+"</i>"
-			+getEntry("school")+"."); // VERIFICAR
+			getEntry("author")+"."
+			+"<i>"+getEntry("title")+"</i>"+"."
+			+ getEntry("school")
+			+ getEntry("address",true)
+			+ getEntry("month",true) 
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
 			break;
 			
+			case misc:
+			out.println(
+			getEntry("author")
+			+ getEntry("title",true)
+			+ getEntry("howpublished",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			break;
+			
+			case phdthesis:
+			out.println(
+			getEntry("author")+"."
+			+"<i>"+getEntry("title")+"</i>"+"."
+			+ getEntry("school")
+			+ getEntry("address",true)
+			+ getEntry("month",true) 
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			break;
+			
+			case proceedings:
+			out.println(
+			getEntry("author")
+		    + getEntry("editor",true)+"."
+			+"<i>"+getEntry("title")+"</i>"+","
+			+ getEntry("volume",true)
+			+ getEntry("address",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("organization")
+			+ getEntry("publisher",true)+ "."
+			+ getEntry("note")+".");
+			break;
+			
+				case techreport:
+			out.println(
+			getEntry("author")+"."
+			+"<i>"+getEntry("title",true)+"</i>"
+			+ getEntry("report")
+			+ getEntry("institution",true)
+			+ getEntry("address",true)
+			+ getEntry("month",true)
+			+ getEntry("year")+"."
+			+ getEntry("note")+".");
+			break;
+			
+				case unpublished:
+			out.println(
+			getEntry("author")+"."
+			+"<i>"+getEntry("title")+"</i>"
+			+ getEntry("month")
+			+ getEntry("year")+".");
+			break;
+
 			default:
 			break;
 		}

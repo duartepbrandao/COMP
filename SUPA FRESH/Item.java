@@ -376,11 +376,18 @@ public void debugPrint()
 }
 
 	public static String replaceStrings (String in,int line, int column) {
-		int x;
-			if((x =subs.originals.indexOf(in))!=-1){
+		
+		/*int x;
+		if((x =subs.originals.indexOf(in))!=-1){
 				//System.out.println("debug!!!!!!!!!");
 			return subs.replacements.get(x);
-		}
+		}*/
+		
+		//should replace with last declaration
+		for(int j = subs.originals.size()-1; j>=0; --j)
+			{
+				if(in.equals(subs.originals.get(j)) ) return subs.replacements.get(j);
+			}
 		//if not found
 		System.out.println("Warning:@string <" + in + "> not declared before line " + line + ", column " + column + ";");
 		return "";

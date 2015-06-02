@@ -243,17 +243,6 @@ TOKEN:
 	|<OPEN_ITEM: "{" >
 	|<END_ITEM: "}" >//or INFOCLOSE2
 	|<NOT_OPEN_ITEM: ~["@"]>
-	//|<INFO_OPEN: "{" | "\"" >
-	//|<INFO_CLOSE: "}" | "\"" >
-
-	//should not be used explicity (only to catch errors and such
-	//|<ENTRY_ANY_RHS_1: "=" <INFO_OPEN> (~["{","}","\""])+ <INFO_CLOSE>  >
-	//|<ENTRY_ANY_RHS_2: "=" (~["{","}","\""])+ <INFO_CLOSE>  >
-	//|<ENTRY_ANY_RHS_3: "=" (~["{","}","\""])+  >
-	
-	//|<ANY_SYMBOLS_ENTRY:(~["{","}","\"","\n","@"])+>
-	//|<NOT_OPEN_ITEM: (~["{","@","\n"," "])+ >
-	//|<NOT_END_ITEM: (~["}","@","\n"," "])+ >
 
 }
 
@@ -264,23 +253,11 @@ TOKEN:
  }
  <STRING_STATE> TOKEN: {
  <STRING_TAG : ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])* >
- |<STRING_EQUAL : "="> :INFO_ENTRY_STATE//= not working ??? ??? ???
-// |<STRING_REPLACEMENT: (~["{","}","\""])+ >:DEFAULT 
+ |<STRING_EQUAL : "="> :INFO_ENTRY_STATE
  |<STRING_OPEN_S: "{" >
+ |<STRING_STATE_NONE: ~[]> :DEFAULT 
  }
 
- /*<A_STRING> TOKEN: { //<STRING_REPLACEMENT: (~["{","}","\""])+ >:DEFAULT }
- <STRING_ENTRY1:((~["{","}","\""])|"{\"}")+ "\"">:DEFAULT 
- |<STRING_ENTRY2: (~["{","}"])+ "}">:DEFAULT
- }*/
- 
-/*<ORDER_TOKENS> SKIP :
-{
- " " | "\t" | "\r" | "\n"
-}
-<ORDER_TOKENS> TOKEN: { <ORDER_ENTRY: (["a"-"z","A"-"Z","0"-"9"])+>  :DEFAULT }*/
-
-//<EXCEPTION_T> TOKEN: {:DEFAULT }//\n serve como eof temporariamente
 
 <INFO_ENTRY_STATE> SKIP :
 {
@@ -321,24 +298,6 @@ void NoItem() : {}
 	}
 }
 
-/*void Order() : {Token t1;}
-{
-	try {
-	<ORDER_SIGN> t1=<ORDER_ENTRY> { order_token = t1.image.toLowerCase(); }
-	}
-	catch (ParseException e) {
-	 System.out.println("Warning:Order TAG badly defined. use ## followed by an entry name;");
-	}
-}*/
-
-/*catch (ParseException e) {
-	Token taux = getNextToken();
-    System.out.println("Item not defined properly\n");// + e.toString());
-    Token t;
-    /*do {
-      t = getNextToken();
-    } while (t.kind != ID);*/
-	//}
 
 void Reference() : {Token t1; Token t2;}
 {
@@ -439,13 +398,19 @@ try{
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 void info(String s1) : {Token t1;}
 {
-	<ENTRY_ASSIGN_OPERATOR>
+	try {<ENTRY_ASSIGN_OPERATOR>}
+	catch(ParseException e){ 
+	Token t = getToken(0);
+	throw new ParseException("("+ t.beginLine  +"|" + t.beginColumn + ") was expecting '='" );
+	}
 	try{
+		(
 		(t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>) {items.get(items.size()-1).addEntry(s1 + "=" + t1.image); }
 		|(t1=<INFO_ENTRY_NUM>) {items.get(items.size()-1).addEntry(s1 + "=\"" + t1.image + "\""); }
 		//substituting @strings this way will only consider @string previously declared
 		//which is done by default in LateX. so it's better this way to keep similarities
 		|(t1=<INFO_STRING_TAG>) {items.get(items.size()-1).addEntry(s1 + "=\"" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) + "\""); }
+		)
 	}	catch (ParseException e) {
 	Token te = getToken(1);
 
@@ -467,7 +432,7 @@ void entry_not_valid() : {}
 	{ 
 	Token te = getToken(1);
 	
-	if(te.kind==START_ITEM) throw new ParseException();
+	if(te.kind==START_ITEM) throw new ParseException("Started new item before closing another");
 	
 	if(te.image==","|te.image=="}") System.out.println("Warning("+ te.endLine + "|"+ te.endColumn +"): Missing entry.");
     else System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"): \"" +te.image+"\" - not a valid Entry;");
@@ -1015,26 +980,38 @@ catch (ParseException e) {
 }
  void StringOperatorEntry() : {Token t0; Token t1; Token t2;}
  {
+	 
+		 
 	 t0=<T_STRING_STATE>
 	 OpenStringOperatorEntry(t0)
+	 
 	 try{
+	 try{
+		 (
   t1=<STRING_TAG>
   <STRING_EQUAL>
-  (t2=<INFO_ENTRY1>|t2=<INFO_ENTRY2>) { Item.subs.add(t1.image,t2.image.substring(1,t2.image.length()-1) ); }
-  //System.out.println("debug str:" + t1.image + "---" + t2.image);}
+  
+  (
+  t2=<INFO_ENTRY1>|t2=<INFO_ENTRY2>
+  ) { Item.subs.add(t1.image,t2.image.substring(1,t2.image.length()-1) ); }
+  )
 	 }
 	 catch (ParseException e) {
-		 System.out.println(e.toString());
 		  System.out.println("Error  ("+ t0.endLine + "|"+ t0.endColumn +"): @string is badly defined;");
-	 }
-
-	 try{
-	 CloseItem()
-	}catch (ParseException e) {
-	    Token t;
-    do {
-      t = getNextToken();
-    } while (t.kind != START_ITEM && t.kind != END_ITEM);
 	 
-	}
+	 Token te = getToken(1);
+	
+	if(te.kind==START_ITEM) throw new ParseException("Started new item before closing another");
+	 }
+	 }catch (ParseException e){}
+	 
+	 
+	 CloseItem()
+	 
+	/*}catch (ParseException e) {
+	    Token t,tn=getToken(1);
+    while (tn.kind != START_ITEM && tn.kind != EOF && t.kind != END_ITEM) {
+      t = getNextToken(); tn=getToken(1);
+    } 
+	}*/
  }

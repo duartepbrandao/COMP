@@ -10,16 +10,19 @@ import java.util.Scanner;
 // código Java que invoca o parser
 public class Exp1 {
 
-static java.util.List<Item> items;
+
 static String order_token;
 //static java.util.List<String> crossRef;
 static boolean ocurred_error_inside_item_during_parsing=false;//what it says...
 
+static String auxInfoBuilder="";
+//static int bracketsDepth = 0;
+
 public static void main(String args[]) throws ParseException {
 
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-//inicializaçao da lista de items a ser guardados
-items = new java.util.ArrayList<Item>();
+//inicializaçao da lista de Item.items a ser guardados
+Item.items = new java.util.ArrayList<Item>();
 if (Item.subs==null) Item.subs = new StringOperator();
 order_token="";
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -43,7 +46,7 @@ parser.Start();
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //order stuff
 if (order_token!="")//create a token later for ordering stuff
-java.util.Collections.sort(items, new ItemComparator(order_token));
+java.util.Collections.sort(Item.items, new ItemComparator(order_token));
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //check semantics
 System.out.println("___________________________________________________");
@@ -51,45 +54,46 @@ System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
 System.out.println("The compiler will try to discard errors mentioned above and compile the rest");
 System.out.println("The warnings and errors below are relative to the parts that were not discarded");
 System.out.println("---------------------------------------------------");
-for(int i = 0; i<items.size(); i++)
+for(int i = 0; i<Item.items.size(); i++)
 {
-	Item it = items.get(i);
+	Item it = Item.items.get(i);
 		
 	//check item's entries
-	int problemsFound=items.get(i).validateItem();
+	int problemsFound=Item.items.get(i).validateItem();
 		
 	int occur=1;//how many times the same id is found
 	boolean missing=true;//if crossre is missing
 
 	String cref = it.getEntry("crossref");
+	//*debug*/System.out.println("----" + cref);
 	if (!cref.equals("?"))
 	{
 		
-	for(int j = 0; j<items.size(); j++){
-		//check if cossrefered item exists
-		if ( items.get(j).id.equals(cref))
+	for(int j = 0; j<Item.items.size(); j++){
+		//check if crossref item exists
+		if ( Item.items.get(j).id.equals(cref))
 		{
-			items.get(i).crossref = items.get(j);
+			//Item.items.get(i).crossref = Item.items.get(j);
 			missing=false;
 		}
-		if(j>i)//check items with same id
+		if(j>i)//check Item.items with same id
 		{
-			if(items.get(j).id.equals(it.id) ) 
+			if(Item.items.get(j).id.equals(it.id) ) 
 			{
 				occur++;
-				items.remove(j);
+				Item.items.remove(j);
 				j--;
 			}
 		}	
 	}	
 	
-	if (missing) System.out.println("Warning: In item <" + items.get(i).id +"> was not found the given crossreference <"+ cref +">");
+	if (missing) System.out.println("Warning: In item <" + Item.items.get(i).id +"> was not found the given crossreference <"+ cref +">");
 	}
-	else for(int j = i+1; j<items.size(); j++){//check items with same id
-			if(items.get(j).id.equals(it.id) ) 
+	else for(int j = i+1; j<Item.items.size(); j++){//check Item.items with same id
+			if(Item.items.get(j).id.equals(it.id) ) 
 			{
 				occur++;
-				items.remove(j);
+				Item.items.remove(j);
 				j--;
 			}		
 		}
@@ -99,7 +103,7 @@ for(int i = 0; i<items.size(); i++)
 		System.out.println("Error:Item <" + it.id + "> as " + occur + " definitions. The compiler will only take into account the first occurrence."  ) ;
 	}
 		if ( problemsFound>0) 
-			System.out.println("Item <" + items.get(i).id +"> has "+ problemsFound +" problems"); 
+			System.out.println("Item <" + Item.items.get(i).id +"> has "+ problemsFound +" problems"); 
 	
 } 
 Item.subs.show_warnings();
@@ -124,11 +128,11 @@ Item.subs.show_warnings();
 </head>
 */
 	out.println("<body>\n");
-	for(int i = 0; i<items.size(); i++)
+	for(int i = 0; i<Item.items.size(); i++)
 	{
 		//export item to output file
-		items.get(i).save2HTML(out);
-		// /*debug:*/System.out.println(items.get(i).id);
+		Item.items.get(i).save2HTML(out,i);
+		// /*debug:*/System.out.println(Item.items.get(i).id);
 	}
 	out.println("</body>\n");
 	out.println("</html>");
@@ -140,6 +144,12 @@ Item.subs.show_warnings();
 }
 }
 PARSER_END(Exp1)
+
+TOKEN_MGR_DECLS : {
+	private static int bracketsDepth=0;
+}
+
+
 // símbolos que não devem ser considerados na análise
 SKIP :
 {
@@ -154,11 +164,11 @@ TOKEN:
 	//DEFINIR TIPOS
 	//===========================================
 	<T_ARTICLE:("a"|"A")("r"|"R")("t"|"T")("i"|"I")("c"|"C")("l"|"L")("e"|"E")>
+	|<T_INBOOK:("i"|"I")("n"|"N")("b"|"B")("o"|"O")("o"|"O")("k"|"K")>
 	|<T_BOOK:("b"|"B")("o"|"O")("o"|"O")("k"|"K")>
 	|<T_BOOKLET:("b"|"B")("o"|"O")("o"|"O")("k"|"K")("l"|"L")("e"|"E")("t"|"T")>
 	|<T_CONFERENCE:("c"|"C")("o"|"O")("n"|"N")("f"|"F")("e"|"E")("r"|"R")("e"|"E")("n"|"N")("c"|"C")("e"|"E")>
 	|<T_ELECTRONIC:("e"|"E")("l"|"L")("e"|"E")("c"|"C")("t"|"T")("r"|"R")("o"|"O")("n"|"N")("i"|"I")("c"|"C")>
-	|<T_INBOOK:("i"|"I")("n"|"N")("b"|"B")("o"|"O")("o"|"O")("k"|"K")>
 	|<T_INCOLLECTION:("i"|"I")("n"|"N")("c"|"C")("o"|"O")("l"|"L")("l"|"L")("e"|"E")("c"|"C")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
 	|<T_INPROCEEDINGS:("i"|"I")("n"|"N")("p"|"P")("r"|"R")("o"|"O")("c"|"C")("e"|"E")("e"|"E")("d"|"D")("i"|"I")("n"|"N")("g"|"G")("s"|"S")>
 	|<T_MANUAL:("m"|"M")("a"|"A")("n"|"N")("u"|"U")("a"|"A")("l"|"L")>
@@ -174,22 +184,7 @@ TOKEN:
 	|<T_UNPUBLISHED:("u"|"U")("n"|"N")("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("d"|"D")>
 
 	|<T_STRING_STATE:("@")("s"|"S")("t"|"T")("r"|"R")("i"|"I")("n"|"N")("g"|"G") >: STRING_STATE
-	//===========================================
-	//GENERAL ENTRIES
-	//===========================================
-	//<ENTRY_CROSSREF>|<ENTRY_KEYWORDS>|<ENTRY_FILE>|<ENTRY_DOI>|<ENTRY_URL>|<ENTRY_COMMENT>|<ENTRY_OWNER>|<ENTRY_TIMESTAMP>
-|<CROSSREF:("c"|"C")("r"|"R")("o"|"O")("s"|"S")("s"|"S")("r"|"R")("e"|"E")("f"|"F")>
-|<KEYWORDS:("k"|"K")("e"|"E")("y"|"Y")("w"|"W")("o"|"O")("r"|"R")("d"|"D")("s"|"S")>
-|<FILE:("f"|"F")("i"|"I")("l"|"L")("e"|"E")>
-|<DOI:("d"|"D")("o"|"O")("i"|"I")>
-|<URL:("u"|"U")("r"|"R")("l"|"L")>
-|<COMMENT:("c"|"C")("o"|"O")("m"|"M")("m"|"M")("e"|"E")("n"|"N")("t"|"T")>
-|<OWNER:("o"|"O")("w"|"W")("n"|"N")("e"|"E")("r"|"R")>
-|<TIMESTAMP:("t"|"T")("i"|"I")("m"|"M")("e"|"E")("s"|"S")("t"|"T")("a"|"A")("m"|"M")("p"|"P")>
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = = = = == = = = = = = = = =
-|<ABSTRACT:("a"|"A")("b"|"B")("s"|"S")("t"|"T")("r"|"R")("a"|"A")("c"|"C")("t"|"T")>
-|<REVIEW:("r"|"R")("e"|"E")("v"|"V")("i"|"I")("e"|"E")("w"|"W")>
-|<ANNOTATE:("a"|"A")("n"|"N")("n"|"N")("o"|"O")("t"|"T")("a"|"A")("t"|"T")("e"|"E")>
+
 
 	//===========================================
 	//ENTRIES
@@ -203,6 +198,43 @@ TOKEN:
 	(YES COUD MAKE A SUBTOKEN NOW BUT NOT RLY IMPORTANT CAUSE CPY PASTE ALSO WORKS)
 	(NOT SURE HOW TO INCLUDE NUMS THERE =/)
 	*/
+
+
+	//===========================================
+	//DEFINIÇOES BASICAS
+	//===========================================
+
+
+	|<START_ITEM: "@" >
+	|<OPEN_ITEM: "{" >:ITEM_STATE
+
+	
+	|<NOT_OPEN_ITEM: ~["@"]>
+
+}
+
+
+ <ITEM_STATE> SKIP :
+ {
+ 	" " | "\t" | "\r" | "\n"
+ }
+<ITEM_STATE> TOKEN: {	
+	//===========================================
+	//GENERAL ENTRIES
+	//===========================================
+	//<ENTRY_CROSSREF>|<ENTRY_KEYWORDS>|<ENTRY_FILE>|<ENTRY_DOI>|<ENTRY_URL>|<ENTRY_COMMENT>|<ENTRY_OWNER>|<ENTRY_TIMESTAMP>
+<CROSSREF:("c"|"C")("r"|"R")("o"|"O")("s"|"S")("s"|"S")("r"|"R")("e"|"E")("f"|"F")>
+|<KEYWORDS:("k"|"K")("e"|"E")("y"|"Y")("w"|"W")("o"|"O")("r"|"R")("d"|"D")("s"|"S")>
+|<FILE:("f"|"F")("i"|"I")("l"|"L")("e"|"E")>
+|<DOI:("d"|"D")("o"|"O")("i"|"I")>
+|<URL:("u"|"U")("r"|"R")("l"|"L")>
+|<COMMENT:("c"|"C")("o"|"O")("m"|"M")("m"|"M")("e"|"E")("n"|"N")("t"|"T")>
+|<OWNER:("o"|"O")("w"|"W")("n"|"N")("e"|"E")("r"|"R")>
+|<TIMESTAMP:("t"|"T")("i"|"I")("m"|"M")("e"|"E")("s"|"S")("t"|"T")("a"|"A")("m"|"M")("p"|"P")>
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = = = = == = = = = = = = = =
+|<ABSTRACT:("a"|"A")("b"|"B")("s"|"S")("t"|"T")("r"|"R")("a"|"A")("c"|"C")("t"|"T")>
+|<REVIEW:("r"|"R")("e"|"E")("v"|"V")("i"|"I")("e"|"E")("w"|"W")>
+|<ANNOTATE:("a"|"A")("n"|"N")("n"|"N")("o"|"O")("t"|"T")("a"|"A")("t"|"T")("e"|"E")>
 |<AUTHOR: ("a"|"A")("u"|"U")("t"|"T")("h"|"H")("o"|"O")("r"|"R") >
 |<TITLE:("t"|"T")("i"|"I")("t"|"T")("l"|"L")("e"|"E")>
 |<PUBLISHER:("p"|"P")("u"|"U")("b"|"B")("l"|"L")("i"|"I")("s"|"S")("h"|"H")("e"|"E")("r"|"R")>
@@ -232,18 +264,16 @@ TOKEN:
 |<MONTHFILED:("m"|"M")("o"|"O")("n"|"N")("t"|"T")("h"|"H")("f"|"F")("i"|"I")("l"|"L")("e"|"E")("d"|"D")>
 |<DAYFILED:("d"|"D")("a"|"A")("y"|"Y")("f"|"F")("i"|"I")("l"|"L")("e"|"E")("d"|"D")>
 |<DAY:("d"|"D")("a"|"A")("y"|"Y")>	
-
-	//===========================================
-	//DEFINIÇOES BASICAS
-	//===========================================
+	
 	|<ID: (["a"-"z","A"-"Z","0"-"9","_"])+>
+	
 	|<INFO_SEPARATOR: "," >
-	|<ENTRY_ASSIGN_OPERATOR: "=" >:INFO_ENTRY_STATE
-	|<START_ITEM: "@" >
-	|<OPEN_ITEM: "{" >
-	|<END_ITEM: "}" >//or INFOCLOSE2
-	|<NOT_OPEN_ITEM: ~["@"]>
-
+	
+	|<ENTRY_EQUAL_O : "="> :INFO_ENTRY_STATE_OTHER
+	|<ENTRY_EQUAL_B : "={">{bracketsDepth=0;}:INFO_ENTRY_STATE_BRACKETS
+	|<ENTRY_EQUAL_A : "=\""> :INFO_ENTRY_STATE_ASPS
+	|<END_ITEM: "}" >:DEFAULT//or INFOCLOSE2
+	|<ITEM_STATE_BACK_DEFAULT: "" >:DEFAULT
 }
 
 
@@ -252,25 +282,96 @@ TOKEN:
  	" " | "\t" | "\r" | "\n"
  }
  <STRING_STATE> TOKEN: {
- <STRING_TAG : ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])* >
- |<STRING_EQUAL : "="> :INFO_ENTRY_STATE
+ <STRING_TAG : ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])* >:ITEM_STATE
+ //|<STRING_EQUAL_O : "="> :INFO_ENTRY_STATE_OTHER
+ //|<STRING_EQUAL_B : "={"> :INFO_ENTRY_STATE_BRACKETS
+ //|<STRING_EQUAL_A : "=\""> :INFO_ENTRY_STATE_ASPS
  |<STRING_OPEN_S: "{" >
- |<STRING_STATE_NONE: ~[]> :DEFAULT 
+ |<STRING_STATE_NONE: ~[]> :ITEM_STATE 
  }
 
 
-<INFO_ENTRY_STATE> SKIP :
+<INFO_ENTRY_STATE_BRACKETS> SKIP :
 {
  " " | "\t" | "\r" | "\n"
 }
-<INFO_ENTRY_STATE> TOKEN:{
-<INFO_STRING_TAG: ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])*>:DEFAULT
-|<INFO_ENTRY_NUM: (["0"-"9"])+ >:DEFAULT
-|<INFO_ENTRY1:"\"" ((~["{","}","\""])|"{\"}")+ "\"" >:DEFAULT 
-|<INFO_ENTRY2:"{" (~["{","}"])+ "}" >:DEFAULT
-|<INFO_ENTRY_NONE: ~[] >:DEFAULT
+<INFO_ENTRY_STATE_BRACKETS> TOKEN:{//ASPS FREE
+<INFO1_ITALIC: "\\" "textit" >
+|<INFO1_BOLD: "\\" "textbf" >
+|<INFO1_UNDERLINE: "\\" "underline" >
+|<INFO1_OPEN_BRACKET: "{" >{bracketsDepth++;}//first open is not counted due 2 being in another state so... beware
+|<INFO1_CLOSE_BRACKET: "}" >{bracketsDepth --; if(bracketsDepth<0) {  SwitchTo(ITEM_STATE);} }
+//|<INFO1_OC_ASPS: "\"" >
+|<INFO1_BODY_B: (~["}","{","\\"]|<INFO1_SYMBOLS>)+ > //allows asps freely
+|<#INFO1_SYMBOLS: 
+("{\"}")
+|("\\" "´a")
+ |("\\" "'a")
+ |("\\" "~a") 
+ |("\\" "^a")
+ |("\\" "'e")
+ |("\\" "^e")
+ |("\\" "´{" "\\" "i}")
+ |("\\" "´I")
+ |("\\" "´o")
+ |("\\" "~o")
+ |("\\" "^o")
+ |("\\" "´u")
+ |("\\" "\"u")
+ |("\\" "c{c}") 
+ |("\\" "c{C}")
+ //not using \\ fr new lines, does not make much sense in this context
+ >
+//|<INFO_ENTRY1:"\"" ((~["{","}","\""])|"{\"}")+ "\"" >:DEFAULT 
+//|<INFO_ENTRY2:"{" (~["{","}"])+ "}" >:DEFAULT
+//|<INFO_ENTRY_NONE: ~[] >:DEFAULT
+|<INFO_BACK_DEFAULT: "" >:ITEM_STATE
  }
 
+ <INFO_ENTRY_STATE_ASPS> SKIP :
+{
+ " " | "\t" | "\r" | "\n"
+}
+<INFO_ENTRY_STATE_ASPS> TOKEN:{
+<INFO2_ITALIC: "\\" "" "textit" >
+|<INFO2_BOLD: "\\" "" "textbf" >
+|<INFO2_UNDERLINE: "\\" "" "underline" >
+|<INFO2_OPEN_BRACKET: "{" >
+|<INFO2_CLOSE_BRACKET: "}" >
+|<INFO2_OC_ASPS: "\"" >:ITEM_STATE
+|<INFO2_BODY_A: (~["}","{","\"","\\"]|<INFO2_SYMBOLS>)+ >
+|<#INFO2_SYMBOLS: 
+("{\"}")
+|("\\" "´a")
+ |("\\" "'a")
+ |("\\" "~a") 
+ |("\\" "^a")
+ |("\\" "'e")
+ |("\\" "^e")
+ |("\\" "´{" "\\" "i}")
+ |("\\" "´I")
+ |("\\" "´o")
+ |("\\" "~o")
+ |("\\" "^o")
+ |("\\" "´u")
+ |("\\" "\"u")
+ |("\\" "c{c}") 
+ |("\\" "c{C}")
+ //not using \\ fr new lines, does not make much sense in this context
+ >
+|<INFO2_BACK_DEFAULT: "" >:ITEM_STATE
+}
+
+ <INFO_ENTRY_STATE_OTHER> SKIP :
+{
+ " " | "\t" | "\r" | "\n"
+}
+<INFO_ENTRY_STATE_OTHER> TOKEN:{
+<INFO_STRING_TAG: (["a"-"z","A"-"Z"]|"_") (["a"-"z","A"-"Z","0"-"9"]|"_")*>
+|<INFO_ENTRY_NUM: (["0"-"9"])+ >:ITEM_STATE
+|<INFO0_BACK_DEFAULT: "" >:ITEM_STATE
+}
+ 
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
@@ -301,6 +402,8 @@ void NoItem() : {}
 
 void Reference() : {Token t1; Token t2;}
 {
+	//*debug*/{  System.out.println("started @item");}
+	
 //try{
 	//[(<START_ITEM>)]
 	try{
@@ -313,26 +416,27 @@ void Reference() : {Token t1; Token t2;}
 
   try{
   	(//listing ok
-	(t1=<T_ARTICLE> OpenItem(t1)    	    	t2=checkID() {items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
-	|(t1=<T_BOOK> OpenItem(t1)    	    	  	t2=checkID() {items.add(new Item(t1.image,t2.image));} Book(t1.image,t2.image) )
-	|(t1=<T_BOOKLET> OpenItem(t1)          		t2=checkID() {items.add(new Item(t1.image,t2.image));} Booklet(t1.image,t2.image) )
-	|(t1=<T_CONFERENCE> OpenItem(t1)			t2=checkID() {items.add(new Item(t1.image,t2.image));} Conference(t1.image,t2.image) )
-	|(t1=<T_ELECTRONIC> OpenItem(t1)          	t2=checkID() {items.add(new Item(t1.image,t2.image));} Electronic(t1.image,t2.image) )
-	|(t1=<T_INBOOK> OpenItem(t1)    		    t2=checkID() {items.add(new Item(t1.image,t2.image));} Inbook(t1.image,t2.image) )
-	|(t1=<T_INCOLLECTION> OpenItem(t1)          t2=checkID() {items.add(new Item(t1.image,t2.image));} Incollection(t1.image,t2.image) )
-	|(t1=<T_INPROCEEDINGS> OpenItem(t1)         t2=checkID() {items.add(new Item(t1.image,t2.image));} Inproceedings(t1.image,t2.image) )
-	|(t1=<T_MANUAL> OpenItem(t1)      			t2=checkID() {items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
-	|(t1=<T_MASTERTHESIS> OpenItem(t1)			t2=checkID() {items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
-	|(t1=<T_MISC> OpenItem(t1)          		/*t2=checkID() {items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)*/  )
-	|(t1=<T_OTHER> OpenItem(t1)         		t2=checkID() {items.add(new Item(t1.image,t2.image));} Other(t1.image,t2.image) )
-	|(t1=<T_PATENT> OpenItem(t1)        		t2=checkID() {items.add(new Item(t1.image,t2.image));} Patent(t1.image,t2.image) )
-	|(t1=<T_PERIODICAL> OpenItem(t1)    		t2=checkID() {items.add(new Item(t1.image,t2.image));} Periodical(t1.image,t2.image) )
-	|(t1=<T_PHDTHESIS> OpenItem(t1)     		t2=checkID() {items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) )
-	|(t1=<T_PROCEEDINGS> OpenItem(t1)   		t2=checkID() {items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
-	|(t1=<T_STANDARD> OpenItem(t1)      		t2=checkID() {items.add(new Item(t1.image,t2.image));} Standard(t1.image,t2.image) )
-	|(t1=<T_TECHREPORT> OpenItem(t1)    		t2=checkID() {items.add(new Item(t1.image,t2.image));} Techreport(t1.image,t2.image) )
-	|(t1=<T_UNPUBLISHED> OpenItem(t1)   		t2=checkID() {items.add(new Item(t1.image,t2.image));} Unpublished(t1.image,t2.image) )
-	)//end of listing ok
+	(t1=<T_ARTICLE> OpenItem(t1)    	    	t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Article(t1.image,t2.image) )
+	|(t1=<T_BOOK> OpenItem(t1)    	    	  	t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Book(t1.image,t2.image) )
+	|(t1=<T_BOOKLET> OpenItem(t1)          		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Booklet(t1.image,t2.image) )
+	|(t1=<T_CONFERENCE> OpenItem(t1)			t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Conference(t1.image,t2.image) )
+	|(t1=<T_ELECTRONIC> OpenItem(t1)          	t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Electronic(t1.image,t2.image) )
+	|(t1=<T_INBOOK> OpenItem(t1)    		    t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Inbook(t1.image,t2.image) )
+	|(t1=<T_INCOLLECTION> OpenItem(t1)          t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Incollection(t1.image,t2.image) )
+	|(t1=<T_INPROCEEDINGS> OpenItem(t1)         t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Inproceedings(t1.image,t2.image) )
+	|(t1=<T_MANUAL> OpenItem(t1)      			t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Manual(t1.image,t2.image) )
+	|(t1=<T_MASTERTHESIS> OpenItem(t1)			t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} MasterThesis(t1.image,t2.image)  )
+	|(t1=<T_MISC> OpenItem(t1)          		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Misc(t1.image,t2.image)  )
+	|(t1=<T_OTHER> OpenItem(t1)         		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Other(t1.image,t2.image) )
+	|(t1=<T_PATENT> OpenItem(t1)        		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Patent(t1.image,t2.image) )
+	|(t1=<T_PERIODICAL> OpenItem(t1)    		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Periodical(t1.image,t2.image) )
+	|(t1=<T_PHDTHESIS> OpenItem(t1)     		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} PhdThesis(t1.image,t2.image) )
+	|(t1=<T_PROCEEDINGS> OpenItem(t1)   		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Proceedings(t1.image,t2.image)  )
+	|(t1=<T_STANDARD> OpenItem(t1)      		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Standard(t1.image,t2.image) )
+	|(t1=<T_TECHREPORT> OpenItem(t1)    		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Techreport(t1.image,t2.image) )
+	|(t1=<T_UNPUBLISHED> OpenItem(t1)   		t2=checkID() {Item.items.add(new Item(t1.image,t2.image));} Unpublished(t1.image,t2.image) )
+	)//*debug*/ {System.out.println(t1.image +"-deb");}
+	//end of listing ok
 	}
 	catch (ParseException e) {
 	Token te = getToken(0);
@@ -348,6 +452,7 @@ void Reference() : {Token t1; Token t2;}
       t = getNextToken();
     } while (t.kind != START_ITEM && t.kind != END_ITEM);
 	}*/
+	//*debug*/{  System.out.println("ended @item");}
 }
 
 void OpenItem(Token t1) : {}
@@ -383,7 +488,7 @@ try{
   {
 	  Token te = getToken(0); Token tn = getToken(1);
 	  while (tn.kind != START_ITEM && te.kind != END_ITEM &&tn.kind!=EOF) {
-     te=getNextToken(); tn = getToken(1); // /*debug:*/ System.out.println("_"+te.image + "_"+tn.image);
+     te=getNextToken(); tn = getToken(1); // //*debug:*/ System.out.println("_"+te.image + "_"+tn.image);
 	  }
 	  if(te.kind!=END_ITEM)
 	System.out.println("Warning("+ te.beginLine+"|"+  te.beginColumn +"):Not closing item with '}' ;");
@@ -396,26 +501,109 @@ try{
 //= = = = = = = == = = = = = = == = = = == = = == = = = = = == = = = = == = = = = = ==
 //ENTRIES PRODUCTIONS
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-void info(String s1) : {Token t1;}
+void info(String s1) : {Token t1;} 
 {
-	try {<ENTRY_ASSIGN_OPERATOR>}
-	catch(ParseException e){ 
-	Token t = getToken(0);
-	throw new ParseException("("+ t.beginLine  +"|" + t.beginColumn + ") was expecting '='" );
-	}
+	{boolean checkequal=false;}
 	try{
+		{String res="";}
+		
+		(/*0*/ 
+		 
+		(/*1*/
 		(
-		(t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>) {items.get(items.size()-1).addEntry(s1 + "=" + t1.image); }
-		|(t1=<INFO_ENTRY_NUM>) {items.get(items.size()-1).addEntry(s1 + "=\"" + t1.image + "\""); }
+		( <ENTRY_EQUAL_A> {checkequal=true;} [t1=<INFO2_BODY_A> {res+=t1.image;}] (specialInfoTYPE_ASPS()	 {res+=auxInfoBuilder;}	[t1=<INFO2_BODY_A> {res+=t1.image;}] )* <INFO2_OC_ASPS> ) 	
+		|(<ENTRY_EQUAL_B> {checkequal=true;} [t1=<INFO1_BODY_B> {res+=t1.image;}] (specialInfoTYPE_BRACKETS() {res+=auxInfoBuilder;}	[t1=<INFO1_BODY_B> {res+=t1.image;}] )* <INFO1_CLOSE_BRACKET> )
+		//t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>
+		
+		) {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + res  ); } 
+		)/*/1*/
+		
+		/*2*/
+		|(<ENTRY_EQUAL_O> {checkequal=true;}
+		
+		(
+		(t1=<INFO_ENTRY_NUM> {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
 		//substituting @strings this way will only consider @string previously declared
 		//which is done by default in LateX. so it's better this way to keep similarities
-		|(t1=<INFO_STRING_TAG>) {items.get(items.size()-1).addEntry(s1 + "=\"" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) + "\""); }
+		|(t1=<INFO_STRING_TAG> {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
 		)
+		
+		)
+		/*/2*/
+		
+		)/*0*/
 	}	catch (ParseException e) {
 	Token te = getToken(1);
-
-    System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): \"" +te.image+"\" - entry value was badly defined;");
+	if(!checkequal) System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): '=' not found;");
+    else System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): \"" +te.image+"\" - entry value was badly defined;");
+	//*debug*/System.out.println(e.toString());
 	}
+}
+
+void specialInfoTYPE_BRACKETS() : {Token t1;}
+{
+	{String result="";String endspecial="";auxInfoBuilder="";}
+	
+	// - - - - - - - - - - - - - - - - - - -
+	( 	
+		(
+		<INFO1_ITALIC> 		{result+= "<i>"; endspecial="</i>";}
+		|<INFO1_BOLD>		{result+= "<b>"; endspecial="</b>";}
+		|<INFO1_UNDERLINE>	{result+= "<u>"; endspecial="</u>";}
+		)
+		
+		<INFO1_OPEN_BRACKET> 	
+	( 
+	[t1=<INFO1_BODY_B> { result += t1.image;}] 				
+	[specialInfoTYPE_BRACKETS() { result += auxInfoBuilder;}
+		[t1=<INFO1_BODY_B> { result += t1.image;}]
+	] 
+	)
+	)
+	
+	// - - - - - - - - - - - - - - - - - - -
+	/*( <INFO_BOLD> <INFO_OPEN_BRACKET> 	
+	( 
+	[t1=<INFO1_BODY_B> { result += t1.image;}] 				
+	[rec=specialInfoTYPE_BRACKETS() { result += rec;}
+		[t1=<INFO1_BODY_B> { result += t1.image;}]			
+	]	
+	)
+	){ result = "<b>" + result + "</b>";}
+	// - - - - - - - - - - - - - - - - - - -
+	( <INFO_UNDERLINE> <INFO_OPEN_BRACKET> 	
+	( 
+	[t1=<INFO1_BODY_B> { result += t1.image;}] 				
+	[rec=specialInfoTYPE_BRACKETS() { result += rec;}
+		[t1=<INFO1_BODY_B> { result += t1.image;}]				
+	]
+	)
+	){ result = "<u>" + result + "</u>";}*/
+	//=====================================
+	<INFO1_CLOSE_BRACKET> {auxInfoBuilder= result+endspecial;}
+}
+
+void specialInfoTYPE_ASPS() : {Token t1;}
+{
+	{String result="";String endspecial="";auxInfoBuilder="";}
+	
+	( 	
+		(
+		<INFO2_ITALIC> 		{result+= "<i>"; endspecial="</i>";}
+		|<INFO2_BOLD>		{result+= "<b>"; endspecial="</b>";}
+		|<INFO2_UNDERLINE>	{result+= "<u>"; endspecial="</u>";}
+		)
+		
+		<INFO2_OPEN_BRACKET> 	
+	( 
+	[t1=<INFO2_BODY_A> { result += t1.image;}] 				
+	[specialInfoTYPE_ASPS() {result += auxInfoBuilder;}
+		[t1=<INFO2_BODY_A> { result += t1.image;}]
+	] 
+	)
+	)
+
+	<INFO2_CLOSE_BRACKET> {auxInfoBuilder= result+endspecial;}
 }
 //===============================================================================
 //GENERAL ENTRY PRODUCTIONS
@@ -476,10 +664,10 @@ void entry_REVIEW() : {Token t1;} {
  t1=<REVIEW>   info(t1.image)  
 	}
 void entry_ANNOTATE() : {Token t1;} { 
- t1=<ANNOTATE> info(t1.image)  // VERIFICAR!!!!!!!!!
+ t1=<ANNOTATE> info(t1.image)
+} // VERIFICAR!!!!!!!!!
 //===============================================================================
 //ENTRY PRODUCTIONS
-	}
 void entry_AUTHOR() : {Token t1;} { 
  t1=<AUTHOR>   info(t1.image) 
 	}
@@ -975,30 +1163,38 @@ try{
 	t0=<STRING_OPEN_S>
 	}
 catch (ParseException e) {
-    System.out.println("Warning: @string not opened at line " + t0.endLine+";");// + e.toString());
+    System.out.println("Error: @string not opened at line " + t0.endLine+";");// + e.toString());
+	throw e;
 	}
 }
- void StringOperatorEntry() : {Token t0; Token t1; Token t2;}
+
+void StringOperatorEntry() : {Token t0; Token t1; Token t2;}
  {
-	 
+	 //*debug*/{  System.out.println("started @str");}
 		 
 	 t0=<T_STRING_STATE>
-	 OpenStringOperatorEntry(t0)
 	 
 	 try{
+		 
+		 OpenStringOperatorEntry(t0)
+		 
 	 try{
 		 (
   t1=<STRING_TAG>
-  <STRING_EQUAL>
   
+    {String res="";}
+	
   (
-  t2=<INFO_ENTRY1>|t2=<INFO_ENTRY2>
-  ) { Item.subs.add(t1.image,t2.image.substring(1,t2.image.length()-1) ); }
+  (<ENTRY_EQUAL_A> [t2=<INFO2_BODY_A> {res+=t2.image;}] [specialInfoTYPE_ASPS() {res+=auxInfoBuilder;}	[t2=<INFO2_BODY_A> {res+=t2.image;}]] <INFO2_OC_ASPS> )
+  |(<ENTRY_EQUAL_B> [t2=<INFO1_BODY_B> {res+=t2.image;}] [specialInfoTYPE_BRACKETS() {res+=auxInfoBuilder;} [t2=<INFO1_BODY_B> {res+=t2.image;}]] <INFO1_CLOSE_BRACKET>)
+  |(<ENTRY_EQUAL_O> t2=<INFO_ENTRY_NUM> {res+=t2.image;}) 
+  ) { Item.subs.add(t1.image,res ); }
+  
   )
 	 }
 	 catch (ParseException e) {
 		  System.out.println("Error  ("+ t0.endLine + "|"+ t0.endColumn +"): @string is badly defined;");
-	 
+	 //*debug*/System.out.println(e.toString());
 	 Token te = getToken(1);
 	
 	if(te.kind==START_ITEM) throw new ParseException("Started new item before closing another");
@@ -1014,4 +1210,5 @@ catch (ParseException e) {
       t = getNextToken(); tn=getToken(1);
     } 
 	}*/
+	//*debug*/{  System.out.println("ended @str");}
  }

@@ -1,4 +1,7 @@
 public class Item{
+
+public static java.util.List<Item> items;
+
 ItemType type;//stores type (book,article,etc...
 String id;//stokes bibteckey
 java.util.List<String>  entries;//{stores entries
@@ -99,7 +102,7 @@ public int validateItem()
 //note:removes closing info " or } but not the open info
 	entries.add( 
 	entry.substring(0,entry.indexOf("=")).toLowerCase() +
-	entry.substring(entry.indexOf("="), entry.length()-1)
+	entry.substring(entry.indexOf("="))//entry.substring(entry.indexOf("="), entry.length()-1)
 	);
 }
 
@@ -138,7 +141,7 @@ public String getEntry(String entry)//addComma false, omit false
 	for(int i = 0; i<entries.size() ;i++)
 	if (entries.get(i).indexOf(entry) != -1) 
 		return replaceSpecialCharacteres ( 
-	entries.get(i).substring(entry.length()+2)
+	entries.get(i).substring(entry.length()+1)
 	);
 	
 	return "?";
@@ -149,8 +152,8 @@ public String getEntry(String entry,boolean addComma) //omit false
 	if (entries.get(i).indexOf(entry) != -1)
 		return  replaceSpecialCharacteres ( 
 	addComma? "," + 
-	entries.get(i).substring(entry.length()+2) :
-	entries.get(i).substring(entry.length()+2)
+	entries.get(i).substring(entry.length()+1) :
+	entries.get(i).substring(entry.length()+1)
 	);
 	
 	return ",?";
@@ -161,15 +164,15 @@ public String getEntry(String entry,boolean addComma,boolean omit)
 	if (entries.get(i).indexOf(entry) != -1) 
 		return replaceSpecialCharacteres ( 
 	addComma? "," + 
-	entries.get(i).substring(entry.length()+2) :
-	entries.get(i).substring(entry.length()+2)
+	entries.get(i).substring(entry.length()+1) :
+	entries.get(i).substring(entry.length()+1)
 	);
 	
 	if (omit) return "";
 	return ",?";
 }
 
-public void save2HTML(java.io.PrintWriter out)
+public void save2HTML(java.io.PrintWriter out,int index)
 {
 
 /*
@@ -188,6 +191,8 @@ for();
 try{
 	out.println("<p>");
 	if (url.length()>0) out.println("<a href="+url+">");
+		
+		out.println("["+ index++ +"] : ");
 		
 switch(type)
 		{
@@ -360,6 +365,15 @@ switch(type)
 			default:
 			break;
 		}
+		
+			for(int i=items.size()-1; i>=0;--i){
+		
+		    if(getEntry("crossref").equals(items.get(i).id)){
+			out.println("In "+items.get(i).getEntry("title")+ " ["+ i++ +"]");
+			break;
+			}
+		}
+		
 }catch(Exception e)
 {	
 System.out.println("FAILED 2 OUTPUT ITEM WITH ID:"+id);

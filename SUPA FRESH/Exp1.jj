@@ -12,17 +12,16 @@ public class Exp1 {
 
 
 static String order_token;
-//static java.util.List<String> crossRef;
 static boolean ocurred_error_inside_item_during_parsing=false;//what it says...
 
 static String auxInfoBuilder="";
-//static int bracketsDepth = 0;
 
 public static void main(String args[]) throws ParseException {
 
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //inicializaçao da lista de Item.items a ser guardados
 Item.items = new java.util.ArrayList<Item>();
+
 if (Item.subs==null) Item.subs = new StringOperator();
 order_token="";
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -43,10 +42,6 @@ try{
 parser.Start();
 }catch(ParseException e){}
 }catch(Exception e){ System.out.println("FAILED TO READ FILE"); return; }
-//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-//order stuff
-if (order_token!="")//create a token later for ordering stuff
-java.util.Collections.sort(Item.items, new ItemComparator(order_token));
 //= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 //check semantics
 System.out.println("___________________________________________________");
@@ -107,40 +102,73 @@ for(int i = 0; i<Item.items.size(); i++)
 	
 } 
 Item.subs.show_warnings();
+//= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+//order stuff
+	System.out.println("___________________________________________________");
+	System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
+System.out.print("OPTIONAL:\nIf you wish order raw data by an entry digit the entry name in lowercase.\nIf not digit something else.");
+Scanner orderScanner = new Scanner(System.in);
+String order_token = orderScanner.next();
+if (order_token.equals(	"article"		)||
+	order_token.equals(	"book"		)||
+	order_token.equals(	"booklet"		)||
+	order_token.equals(	"conference"	)||
+	order_token.equals(	"electronic"	)||
+	order_token.equals(	"inbook"		)||
+	order_token.equals(	"incollection")||
+	order_token.equals(	"inproceeding")||
+	order_token.equals(	"manual"		)||
+	order_token.equals(	"masterthesis")||
+	order_token.equals(	"misc"		)||
+	order_token.equals(	"other"		)||
+	order_token.equals(	"patent"		)||
+	order_token.equals(	"periodical"	)||
+	order_token.equals(	"phdthesis"	)||
+	order_token.equals(	"proceedings"	)||
+	order_token.equals(	"standard"	)||
+	order_token.equals(	"techreport"	)||
+	order_token.equals(	"unpublished")
+) java.util.Collections.sort(Item.items, new ItemComparator(order_token));
 //= = = = = = = = = = = = = = = = =  = = = = = = = = = = = = = = = = = =
 //export 2 file
-	try{
+	//try{
 	System.out.println("___________________________________________________");
 	System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -");
 	//java.io.PrintWriter out = new java.io.PrintWriter("biblio.html");
-	System.out.print("Enter the name of the output file:");
-	Scanner outputScanner = new Scanner(System.in);
-	String filename = outputScanner.next();
-	java.io.PrintWriter out = new java.io.PrintWriter(filename);
-	
-	
-	out.println("<!DOCTYPE html>");
-	out.println("<html>");
 
-/*
-<head>
-  <title>Page Title</title>
-</head>
-*/
-	out.println("<body>\n");
+	System.out.print("Enter the name of the output folder:");
+	Scanner outputScanner = new Scanner(System.in);
+	String foldername = outputScanner.next();
+	
+	boolean success = (new java.io.File("../"+foldername)).mkdirs();
+	if (!success) {
+   System.out.println("FAILED 2 CREATE OUTPUT FOLDER");
+   return ;
+	}
+	
+	//java.io.PrintWriter out = new java.io.PrintWriter("../" + foldername+"/raw.html");
+	Item.create_n_open_files(foldername);
+	
+	/*out.println("<!DOCTYPE html>");
+	out.println("<html>");
+	out.println("<body>\n");*/
+	
 	for(int i = 0; i<Item.items.size(); i++)
 	{
 		//export item to output file
-		Item.items.get(i).save2HTML(out,i);
+		Item.items.get(i).save2HTML(i);
 		// /*debug:*/System.out.println(Item.items.get(i).id);
 	}
-	out.println("</body>\n");
+	/*out.println("</body>\n");
 	out.println("</html>");
-	out.close();
+	out.close();*/
+	
+	Item.close_files();
+	
 	System.out.println("SUCCESSFULY CREATED OUTPUT FILE");
-	}catch(Exception e) {
-	System.out.println("FAILED 2 CREATE OUTPUT FILE");
-	}
+	//}catch(Exception e) {
+	//System.out.println("FAILED 2 CREATE OUTPUT FILE");
+	//}
 }
 }
 PARSER_END(Exp1)

@@ -10,6 +10,8 @@ public Item crossref;//{stores crossref
 
 static StringOperator subs;//(stores @string stuff
 
+static java.util.ArrayList<java.io.PrintWriter> OutFiles;
+
 public Item(String _type, String _id)
 {
 	if (subs==null) subs = new StringOperator();
@@ -26,6 +28,58 @@ public Item(String _type, String _id)
 	
 	crossref = null;
 }
+
+static void create_n_open_files(String foldername)
+{
+	OutFiles = new java.util.ArrayList<java.io.PrintWriter>();
+	try{
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/main.html")	);
+	
+	OutFiles.add( new java.io.PrintWriter("../" + foldername+"/raw.html")	);
+	
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/article.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/book.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/booklet.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/conference.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/electronic.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/inbook.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/incollection.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/inproceedings.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/manual.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/masterthesis.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/misc.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/other.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/patent.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/periodical.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/phdthesis.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/proceedings.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/standard.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/techreport.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/unpublished.html")	);
+	
+	for(int i = OutFiles.size()-1; i>=0;--i)
+	{
+	java.io.PrintWriter  out=  OutFiles.get(i);
+	out.println("<!DOCTYPE html>");
+	out.println("<html>");
+	out.println("<body>\n");
+	}
+	} catch(Exception e) {
+	System.out.println("FAILED 2 CREATE OUTPUT FILE");
+	}
+}
+
+static void close_files()
+{
+	for(int i = OutFiles.size()-1; i>=0;--i)
+	{
+	java.io.PrintWriter  out=  OutFiles.get(i);
+	out.println("</body>\n");
+	out.println("</html>");
+	out.close();
+	}
+}
+
 
 //verify if has repeated entries
 public int checkRepeatedEntries()
@@ -172,33 +226,23 @@ public String getEntry(String entry,boolean addComma,boolean omit)
 	return ",?";
 }
 
-public void save2HTML(java.io.PrintWriter out,int index)
+public void save2HTML(int index)
 {
 
-/*
-for();
-<body>
-  <h1>This is a Heading</h1>
-  <p>This is a paragraph.</p>
-</body>
-*/
-		//italico >>  <i><\i>
-		//bold >>     <b><\b>
-		//<a href="url">link text</a>
-		//url should have http://
+java.io.PrintWriter outraw =  OutFiles.get(1);
 		
 			String url = getEntry("url",false,true);
 try{
-	out.println("<p>");
-	if (url.length()>0) out.println("<a href="+url+">");
+	outraw.println("<p id=\""+ (index+1) +"\">");
+	if (url.length()>0) outraw.println("<a href="+url+">");
 		
-		out.println("["+ index++ +"] : ");
+		outraw.println("["+ (index+1) +"] : ");
 		
 switch(type)
 		{
 		                // ALGUMA ALTERAÇÃO POR SEREM OPCIONAIS???
 		    case article:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"+"."
 			+"<i>"+getEntry("journal")+"</i>"
@@ -212,7 +256,7 @@ switch(type)
 			break;
 			
 			case book:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+ getEntry("title") 
 			+ getEntry("volume",true)+"."
@@ -225,7 +269,7 @@ switch(type)
 			break;
 			
 			case booklet:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+ getEntry("title") + "."
 			+ getEntry("howpublished")
@@ -236,7 +280,7 @@ switch(type)
 			break;
 			
 			case conference:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+ getEntry("title") + "."
 			+ getEntry("editor")
@@ -252,7 +296,7 @@ switch(type)
 			break;
 			
 			case inbook:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+ getEntry("title") 
 			+ getEntry("volume",true)
@@ -267,7 +311,7 @@ switch(type)
 			break;
 			
 			case incollection:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+ getEntry("title") + "."
 			+ getEntry("editor")
@@ -285,7 +329,7 @@ switch(type)
 			
 		
 			case manual:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"
 			+ getEntry("organization",true)
@@ -297,7 +341,7 @@ switch(type)
 			break;
 			
 			case masterthesis:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"+"."
 			+ getEntry("school")
@@ -308,7 +352,7 @@ switch(type)
 			break;
 			
 			case misc:
-			out.println(
+			outraw.println(
 			getEntry("author")
 			+ getEntry("title",true)
 			+ getEntry("howpublished",true)
@@ -318,7 +362,7 @@ switch(type)
 			break;
 			
 			case phdthesis:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"+"."
 			+ getEntry("school")
@@ -329,7 +373,7 @@ switch(type)
 			break;
 			
 			case proceedings:
-			out.println(
+			outraw.println(
 			getEntry("author")
 		    + getEntry("editor",true)+"."
 			+"<i>"+getEntry("title")+"</i>"+","
@@ -343,7 +387,7 @@ switch(type)
 			break;
 			
 				case techreport:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title",true)+"</i>"
 			+ getEntry("report")
@@ -355,7 +399,7 @@ switch(type)
 			break;
 			
 				case unpublished:
-			out.println(
+			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"
 			+ getEntry("month")
@@ -369,17 +413,17 @@ switch(type)
 			for(int i=items.size()-1; i>=0;--i){
 		
 		    if(getEntry("crossref").equals(items.get(i).id)){
-			out.println("In "+items.get(i).getEntry("title")+ " ["+ i++ +"]");
+			outraw.println("In "+items.get(i).getEntry("title")+ " [<a href=#"+ (i+1) +">" + (i+1) +"</a>]");
 			break;
 			}
 		}
 		
 }catch(Exception e)
 {	
-System.out.println("FAILED 2 OUTPUT ITEM WITH ID:"+id);
+System.out.println("FAILED 2 outrawPUT ITEM WITH ID:"+id);
 }
-	if (url.length()>0) out.println("</a>");
-	out.println("</p>\n");
+	if (url.length()>0) outraw.println("</a>");
+	outraw.println("</p>\n");
 }
 
 public void debugPrint()

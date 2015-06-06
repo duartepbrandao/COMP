@@ -298,9 +298,12 @@ TOKEN:
 	|<INFO_SEPARATOR: "," >
 	
 	|<ENTRY_EQUAL_O : "="> :INFO_ENTRY_STATE_OTHER
-	|<ENTRY_EQUAL_B : "={">{bracketsDepth=0;}:INFO_ENTRY_STATE_BRACKETS
-	|<ENTRY_EQUAL_A : "=\""> :INFO_ENTRY_STATE_ASPS
+	|<ENTRY_EQUAL_B : "="(" "|"\t"|"\r"|"\n")*"{" >{bracketsDepth=0;}:INFO_ENTRY_STATE_BRACKETS
+	|<ENTRY_EQUAL_A : "="(" "|"\t"|"\r"|"\n")*"\"" > :INFO_ENTRY_STATE_ASPS
 	|<END_ITEM: "}" >:DEFAULT//or INFOCLOSE2
+	|<INFO_CONCAT_O: "#">:INFO_ENTRY_STATE_OTHER
+	|<INFO_CONCAT_B: "#"(" "|"\t"|"\r"|"\n")*"{">:INFO_ENTRY_STATE_BRACKETS
+	|<INFO_CONCAT_A: "#"(" "|"\t"|"\r"|"\n")*"\"" >:INFO_ENTRY_STATE_ASPS
 	|<ITEM_STATE_BACK_DEFAULT: "" >:DEFAULT
 }
 
@@ -532,40 +535,72 @@ try{
 void info(String s1) : {Token t1;} 
 {
 	{boolean checkequal=false;}
+	
 	try{
 		{String res="";}
 		
+		(/*all*/
+
 		(/*0*/ 
 		 
-		(/*1*/
+		/*1*/
 		(
 		( <ENTRY_EQUAL_A> {checkequal=true;} [t1=<INFO2_BODY_A> {res+=t1.image;}] (specialInfoTYPE_ASPS()	 {res+=auxInfoBuilder;}	[t1=<INFO2_BODY_A> {res+=t1.image;}] )* <INFO2_OC_ASPS> ) 	
 		|(<ENTRY_EQUAL_B> {checkequal=true;} [t1=<INFO1_BODY_B> {res+=t1.image;}] (specialInfoTYPE_BRACKETS() {res+=auxInfoBuilder;}	[t1=<INFO1_BODY_B> {res+=t1.image;}] )* <INFO1_CLOSE_BRACKET> )
 		//t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>
 		
-		) {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + res  ); } 
-		)/*/1*/
+		)//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + res  ); }  
+		/*/1*/
 		
 		/*2*/
 		|(<ENTRY_EQUAL_O> {checkequal=true;}
 		
 		(
-		(t1=<INFO_ENTRY_NUM> {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
+		(t1=<INFO_ENTRY_NUM> {res+=t1.image;})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
 		//substituting @strings this way will only consider @string previously declared
 		//which is done by default in LateX. so it's better this way to keep similarities
-		|(t1=<INFO_STRING_TAG> {Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
+		|(t1=<INFO_STRING_TAG> { res+=Item.replaceStrings(t1.image,t1.endLine,t1.endColumn);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
 		)
 		
 		)
 		/*/2*/
 		
-		)/*0*/
+		)/*0*/ 
+		
+		
+		(/*0*/
+		 
+		/*1*/
+		(
+		( <INFO_CONCAT_A> [t1=<INFO2_BODY_A> {res+=t1.image;}] (specialInfoTYPE_ASPS()	 {res+=auxInfoBuilder;}	[t1=<INFO2_BODY_A> {res+=t1.image;}] )* <INFO2_OC_ASPS> ) 	
+		|(<INFO_CONCAT_B>  [t1=<INFO1_BODY_B> {res+=t1.image;}] (specialInfoTYPE_BRACKETS() {res+=auxInfoBuilder;}	[t1=<INFO1_BODY_B> {res+=t1.image;}] )* <INFO1_CLOSE_BRACKET> )
+		//t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>
+		)//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + res  ); }  
+		/*/1*/
+		/*2*/
+		|(<INFO_CONCAT_O> 
+		(
+		(t1=<INFO_ENTRY_NUM> {res+=t1.image;})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
+		//substituting @strings this way will only consider @string previously declared
+		//which is done by default in LateX. so it's better this way to keep similarities
+		|(t1=<INFO_STRING_TAG> { res+=Item.replaceStrings(t1.image,t1.endLine,t1.endColumn);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
+		)
+		
+		)
+		/*/2*/
+		
+		)*/*0*/ 
+		
+		
+		)/*all*/{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + res  ); } 
 	}	catch (ParseException e) {
 	Token te = getToken(1);
-	if(!checkequal) System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): '=' not found;");
+	if(!checkequal) System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): '=' is missing;");
     else System.out.println("Error  (Line:"+ te.endLine + "|Column:"+ te.endColumn +"): \"" +te.image+"\" - entry value was badly defined;");
 	//*debug*/System.out.println(e.toString());
 	}
+	
+	
 }
 
 void specialInfoTYPE_BRACKETS() : {Token t1;}
@@ -635,14 +670,7 @@ void specialInfoTYPE_ASPS() : {Token t1;}
 }
 //===============================================================================
 //GENERAL ENTRY PRODUCTIONS
-/*void deadInfo() : {}
-{
-	try{
-	(t1=<INFO_ENTRY1>|t1=<INFO_ENTRY2>) 
-		|(t1=<INFO_ENTRY_NUM>) 
-		|(t1=<INFO_STRING_TAG>)
-	}	catch (ParseException e) {throw e;}
-}*/
+
 void entry_not_valid() : {}
 {
 	{ 

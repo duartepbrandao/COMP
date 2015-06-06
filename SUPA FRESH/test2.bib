@@ -3,7 +3,7 @@
 @book{id1,title="example1",crossref="id4"}
 @book{id2,title="example2",title="examp2",croos}
 @book{id2,title="example2",title="examp2",}
-@book{idX,title="exampleX",,year=2000}
+@book{idX,title=   "exampleX",,year=2000}
 @book{id2,title="example2",title="examp2",croos,="sd"}
 
 
@@ -12,6 +12,9 @@
 @book{idC,title="exampleC",title="exampC",,
 @book{idV,title="exampleV",title="exampV",croos="sd"
 
+@string{SUBER="00"}
+@string{SUBER2="11"}
+@string{SUBER="22"}
 
 @book{ok,title="ok"}
 @bookd{idR,title="R"}
@@ -20,15 +23,16 @@
 @book{idR,title=@ @@
 
 @string{SUBS1="example3"}
-@string{SUBSc="example3
-@string{SUBS2="ok"}
 @string{SUBS cple3
+@string{SUBS2="ok"}
+@string{SUBSc="example3
 
-@book{id2,title="example2",title="examp2",croos=sd}
-@book{id5,title="example5\^e",crossref="id99"}
+@book{id5,title=  "example5\^e_"#   {part2}#{_part3}   # "part4" ,crossref="id99"}
+@book{id5x,title=  "exampleh\^e_ef"#   {part2}#{_part3}   # "part4" # SUBS2}
 @book{id4,title="example4",author="Wally Mosk",year="1999",url="www.dood.nnn"}
 @book{id3,title=SUBS1}
 @book{idnoSTR,title=erykery}
+@book{id2,title="example2",title="examp2",croos=sd}
 
 
 @article{artc1,author="article author 1",journal="artc journal",year=2001};uyy op 8608

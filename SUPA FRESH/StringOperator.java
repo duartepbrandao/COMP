@@ -17,7 +17,8 @@ public void show_warnings()
 {
 	System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - -"); 
 	boolean rep=false;
-	for(int i = originals.size()-1; i>=0; --i)
+	for(int i = originals.size()-1; i>=0; --i){
+		//System.out.println("debug:" + originals.get(i));
 			for(int j = i-1; j>=0; --j)
 			{
 				if(originals.get(i).equals(originals.get(j)) ) {
@@ -25,10 +26,12 @@ public void show_warnings()
 					rep=true;
 				}
 			}
+	}
 			if (rep) {
-			System.out.println("\nNote: @String replacements use the last @String item \ndeclared before the item that references it"); 
+			System.out.println("\nNote: @String replacements uses the last @String item \ndeclared before the item that references it"); 
 			
 			}
+	
 }
 
 }

@@ -447,7 +447,7 @@ public void debugPrint()
 				if(in.equals(subs.originals.get(j)) ) return subs.replacements.get(j);
 			}
 		//if not found
-		System.out.println("Warning:@string <" + in + "> not declared before line " + line + ", column " + column + ";");
+		System.out.println("Error:@string <" + in + "> not declared before line " + line + ", column " + column + ";");
 		return "";
 	}
 

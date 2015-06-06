@@ -418,7 +418,7 @@ void NoItem() : {}
 	Token ts = getToken(0);
 	//Token te = getToken(0);
 	Token tn = getToken(1);
-	  while (tn.kind != START_ITEM &&tn.kind!=EOF) {
+	  while (tn.kind != START_ITEM && tn.kind !=T_STRING_STATE &&tn.kind!=EOF) {
     /* te=*/getNextToken(); tn = getToken(1);
 	  }
 	  //if(tn.kind==START_ITEM)
@@ -515,7 +515,7 @@ try{
   }catch (ParseException e)
   {
 	  Token te = getToken(0); Token tn = getToken(1);
-	  while (tn.kind != START_ITEM && te.kind != END_ITEM &&tn.kind!=EOF) {
+	  while (tn.kind != START_ITEM && tn.kind !=T_STRING_STATE && te.kind != END_ITEM &&tn.kind!=EOF) {
      te=getNextToken(); tn = getToken(1); // //*debug:*/ System.out.println("_"+te.image + "_"+tn.image);
 	  }
 	  if(te.kind!=END_ITEM)
@@ -648,7 +648,7 @@ void entry_not_valid() : {}
 	{ 
 	Token te = getToken(1);
 	
-	if(te.kind==START_ITEM) throw new ParseException("Started new item before closing another");
+	if(te.kind==START_ITEM|| te.kind ==T_STRING_STATE) throw new ParseException("Started new item before closing another");
 	
 	if(te.image==","|te.image=="}") System.out.println("Warning("+ te.endLine + "|"+ te.endColumn +"): Missing entry.");
     else System.out.println("Error  ("+ te.endLine + "|"+ te.endColumn +"): \"" +te.image+"\" - not a valid Entry;");
@@ -1225,7 +1225,7 @@ void StringOperatorEntry() : {Token t0; Token t1; Token t2;}
 	 //*debug*/System.out.println(e.toString());
 	 Token te = getToken(1);
 	
-	if(te.kind==START_ITEM) throw new ParseException("Started new item before closing another");
+	if(te.kind==START_ITEM|| te.kind ==T_STRING_STATE) throw new ParseException("Started new item before closing another");
 	 }
 	 }catch (ParseException e){}
 	 

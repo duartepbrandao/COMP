@@ -46,7 +46,7 @@ static void create_n_open_files(String foldername)
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/incollection.html")	);
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/inproceedings.html")	);
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/manual.html")	);
-	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/masterthesis.html")	);
+	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/mastersthesis.html")	);
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/misc.html")	);
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/other.html")	);
 	OutFiles.add(	new java.io.PrintWriter("../" + foldername+"/patent.html")	);
@@ -136,7 +136,7 @@ public int validateItem()
 	case incollection: return check4MandatoryEntry( TypeMandatoryEntries.nonOptional_incollection) + checkRepeatedEntries();
 	 case inproceedings: return check4MandatoryEntry(TypeMandatoryEntries.nonOptional_inproceedings) + checkRepeatedEntries();
 	 case manual: return check4MandatoryEntry(TypeMandatoryEntries.nonOptional_manual) + checkRepeatedEntries();
-	 case masterthesis: return check4MandatoryEntry(TypeMandatoryEntries.nonOptional_masterthesis) + checkRepeatedEntries();
+	 case mastersthesis: return check4MandatoryEntry(TypeMandatoryEntries.nonOptional_masterthesis) + checkRepeatedEntries();
 	 case misc: return checkRepeatedEntries();
 	 case other: return checkRepeatedEntries();
 	 case patent: return check4MandatoryEntry(TypeMandatoryEntries.nonOptional_patent)+ checkRepeatedEntries();
@@ -340,7 +340,7 @@ switch(type)
 			+ getEntry("note")+".");
 			break;
 			
-			case masterthesis:
+			case mastersthesis:
 			outraw.println(
 			getEntry("author")+"."
 			+"<i>"+getEntry("title")+"</i>"+"."

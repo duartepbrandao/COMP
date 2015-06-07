@@ -109,25 +109,23 @@ Item.subs.show_warnings();
 System.out.print("OPTIONAL:\nIf you wish order raw data by an entry digit the entry name in lowercase.\nIf not digit something else.");
 Scanner orderScanner = new Scanner(System.in);
 String order_token = orderScanner.next();
-if (order_token.equals(	"article"		)||
-	order_token.equals(	"book"		)||
-	order_token.equals(	"booklet"		)||
-	order_token.equals(	"conference"	)||
-	order_token.equals(	"electronic"	)||
-	order_token.equals(	"inbook"		)||
-	order_token.equals(	"incollection")||
-	order_token.equals(	"inproceeding")||
-	order_token.equals(	"manual"		)||
-	order_token.equals(	"masterthesis")||
-	order_token.equals(	"misc"		)||
-	order_token.equals(	"other"		)||
-	order_token.equals(	"patent"		)||
+if (order_token.equals(	"title"		)||
+	order_token.equals(	"author"		)||
+	order_token.equals(	"year"		)||
+	order_token.equals(	"month"	)||
+	order_token.equals(	"publisher"	)||
+	order_token.equals(	"editor"		)||
+	order_token.equals(	"journal")||
+	order_token.equals(	"institution")||
+	order_token.equals(	"owner"		)||
+	order_token.equals(	"note")||
+	order_token.equals(	"number"		)||
+	order_token.equals(	"series"		)||
+	order_token.equals(	"volume"		)||
 	order_token.equals(	"periodical"	)||
-	order_token.equals(	"phdthesis"	)||
-	order_token.equals(	"proceedings"	)||
-	order_token.equals(	"standard"	)||
-	order_token.equals(	"techreport"	)||
-	order_token.equals(	"unpublished")
+	order_token.equals(	"address"	)||
+	order_token.equals(	"school"	)||
+	order_token.equals(	"annote")
 ) java.util.Collections.sort(Item.items, new ItemComparator(order_token));
 //= = = = = = = = = = = = = = = = =  = = = = = = = = = = = = = = = = = =
 //export 2 file
@@ -200,7 +198,8 @@ TOKEN:
 	|<T_INCOLLECTION:("i"|"I")("n"|"N")("c"|"C")("o"|"O")("l"|"L")("l"|"L")("e"|"E")("c"|"C")("t"|"T")("i"|"I")("o"|"O")("n"|"N")>
 	|<T_INPROCEEDINGS:("i"|"I")("n"|"N")("p"|"P")("r"|"R")("o"|"O")("c"|"C")("e"|"E")("e"|"E")("d"|"D")("i"|"I")("n"|"N")("g"|"G")("s"|"S")>
 	|<T_MANUAL:("m"|"M")("a"|"A")("n"|"N")("u"|"U")("a"|"A")("l"|"L")>
-	|<T_MASTERTHESIS:("m"|"M")("a"|"A")("s"|"S")("t"|"T")("e"|"E")("r"|"R")("t"|"T")("h"|"H")("e"|"E")("s"|"S")("i"|"I")("s"|"S")>
+/*mastersthesis. with s*/
+|<T_MASTERTHESIS:("m"|"M")("a"|"A")("s"|"S")("t"|"T")("e"|"E")("r"|"R")("s"|"S")("t"|"T")("h"|"H")("e"|"E")("s"|"S")("i"|"I")("s"|"S")>
 	|<T_MISC:("m"|"M")("i"|"I")("s"|"S")("c"|"C")>
 	|<T_OTHER:("o"|"O")("t"|"T")("h"|"H")("e"|"E")("r"|"R")>
 	|<T_PATENT:("p"|"P")("a"|"A")("t"|"T")("e"|"E")("n"|"N")("t"|"T")>
@@ -471,7 +470,7 @@ void Reference() : {Token t1; Token t2;}
 	}
 	catch (ParseException e) {
 	Token te = getToken(0);
-    System.out.println("Error  (Line:" + te.endLine +"|Column:" + te.endColumn +"):Item badly defined. Check item type name and bibkey;");// + e.toString());	
+    System.out.println("Error  ("+te.endLine +"|" + te.endColumn +"): Item badly defined;");// + e.toString());	
 	
 	//throw e;
 	}
@@ -492,7 +491,7 @@ try{
 	<OPEN_ITEM>
 	}
 catch (ParseException e) {
-    System.out.println("Error:"+t1.image + " not properly open at (" + t1.endLine + "|" + t1.endColumn + ") or type written wrongly;");// + e.toString());
+    System.out.println("Error  (" + t1.endLine + "|" + t1.endColumn + "): "+t1.image + " not properly open or type written wrongly;");// + e.toString());
 	
 	/*Token te = getToken(0);
 	Token tn = getToken(1);

@@ -81,7 +81,7 @@ a segunda refere-se  uma análise posterior dos campos lidos;
 
 >Por fim será solicitado  o nome da pasta de output a ser criada.
 Na pasta de output podem ser encontrados diversos ficheiros do tipo html.
-A fim de esclarecer o seu conteudo pode verficar seguidamente uma breve descrição
+A fim de esclarecer o seu conteúdo pode verficar seguidamente uma breve descrição
 
 >index.hml : 
 Ligações para os outros ficheiros html.
@@ -116,15 +116,15 @@ uma árvore de classes numa linguagem orientada a objectos cuja representação sim
                             ={ ; ="                          |            = ; ={ ; =" ; # ; #" ; #{ 
 (+encapsulado)                                          entry value 
 
-Os entry values foram cateorizados em values "entre aspas", "entre chavetas" e "outros".
+Os entry values foram categorizados em values "entre aspas", "entre chavetas" e "outros".
 Note-se que quando se usam aspas não é necessário realizar a contagem das chavetas e quando
-se usam chavetas não é necessário usar {"} para escrever aspas por default nos documentos
-Bibtex usados com LateX. Categorizando permitimos esta sintaxe standard incluindo também partes de 
-texto a italico, negrito e sublinhado definidas ala Latex.
-"Outros" apresentam informações numéricas ou identificadores de subtituições de @strings.
+se usam chavetas não é necessário usar {"} para escrever aspas (por default nos documentos
+Bibtex usados com LateX). Ao Categorizar permitimos esta sintaxe standard incluindo também partes de 
+texto a italico, negrito e sublinhado definidas em ambiente Latex.
+"Outros" apresentam informações numéricas ou identificadores de @strings.
 
 
-	TRATAMENTO DE ERROS
+	TRATAMENTO DE ERROS E AVISOS
 
 De uma forma geral os erros são tratados com blocos de try/catch, sendo imprimidas mensagens 
 custumizadas sobre o possível erro em causa. O bloco que originou o erro é ignorado sendo por 
@@ -137,30 +137,56 @@ não é dado um obtido uma excepção. em vez disso quando se obtém um token no esta
 de item que é deste tipo realiza-se uma iteração até encontrar um token válido que inicie
 o inicio de um novo item  indica-se ao utilizador os limited de input descartados.
 
-	ERROS:
+	LISTA DE ERROS:
 
->Tipo de item inválido. Descarta item inteiro. 
+	>Item não aberto; Tipo de item inválido; Sem id (bibtexkey);
+	(Descarta item inteiro)
 
->Entry inválida. Descarta entry.
-(entries repetidas são consideradas na semantica, para evitar todas as permutações)
+	>Entry inválida; Entry value/info inválido;
+	(Descarta entry)
+	(Descarta informação de uma entry)
+	(Podem causar erros de tipo item inválido)
 
->Entry value inválido. Descarta informação de uma entry.(caso seja por falta de '=' ao atribuir entry esta é notificada)
+	>Texto fora de contexto;
+	(Não é usado, como se fossem comentários)
 
->
+	>@string mal defenida;
 
-TODO ... maybe missing some
+	>@string referida em item não foi definida ante do mesmo;
 
+	NOTA ADICIONAL SOBRE ERROS:
 
+Erros do tipo:
+	@tipo{id,entry="value 
+		ou
+	@string{id="value 
+		etc...
+... onde falta o fecho do valor/info da entry. São difíceis de notificar ao utilizador pois nada garante
+que o que procede não é efectivamente a string pretendida. Assim sendo existe na maioria
+das vezes a notificação de um erro que aparece consequentemente a este específico mas cuja identificação
+poderá não ser muito perceptivel ao utilizador. Idealente talvez podessemos tentar identificá-los com
+algumas considerações, como o comprimento do valor da entry, mas deixamos tal abordagem por implementar.
+	
+	AVISOS ADICIONAIS:
+
+	>falta de '=' ao definir entry value/info
+ 
+	>falta de entry qundo encontra por exemplo ",,"	
+
+	>item não fecha com '}' (ocasionalmente aparecerá como consequência de outros erros)
 
 //===================================================================================
 	ANALISE SEMANTICA
 //===================================================================================
 
-A análise semãntica é realizada no ficheiro Expq.jj e no ficheiro Item.java que 
+A análise semântica é realizada no ficheiro Expq.jj e no ficheiro Item.java que 
 utiliza os arrays definidos em TypeMandatoryEntries.java.
 
 - TypeMandatoryEntries.java
 Contém arrays que indicam quais as entries obrigatórias a cada tipo de item.
+
+- StringOperator.java
+Contém as @strings encontradas.
 
 - Item.java 
 Contém a maioria de funções auxiliares à verificação da semântica.
@@ -172,42 +198,42 @@ Contém as iterações onde são chamadas as funções de Item.java e algumas verifica
 
 >Verifica-se se um item referência o id de uma @string não declarada antes do item aparecer.
 Se tal acontecer o item não poderá realizar subtituição e não aprsentará nenhum valor nesse campo. 
-O utilizador é notificado com uma mensagem de erro na primeira secção de mensagens.
+O utilizador é notificado com uma mensagem de erro na primeira secção de mensagens;
 nota:
-as substituições provenientes de @strings ocorrem durante o parsing.
+as substituições provenientes de @strings ocorrem durante o parsing;
 
 - - - Pós-Parsing - - - 
 
->Verifica-se se um item apresenta entries repetidas. Apenas é usada a primeira.
+>Verifica-se se um item apresenta entries repetidas. Apenas é usada a primeira;
 
->Verifica-se se existem items com o mesmo identificador/Bibtexkey.
-Apenas realiza output da primeria encontrada.
+>Verifica-se se existem items com o mesmo identificador/Bibtexkey;
+(Apenas realiza output da primeria encontrada)
 
 >Verifica-se se os items apresentam todos os entries obrigatórios.
-Notifica o utilizador dos que faltam mas realiza o output à mesma.
+Notifica o utilizador dos que faltam mas realiza o output à mesma;
 
->Verifica-se se as crossreferences usadas nos items existem.
+>Verifica-se se as crossreferences usadas nos items existem;
 
->Verifica se existem @string repetidas.
-nota:
+>Verifica se existem @string repetidas;
+(nota:
 As @strings repetidas podem ser usadas à mesma. O item faz a substituição
 com a última @string de id identificado antes de si. Imitando o que verificamos
-com o output testado em alguns exemplos de Latex.
+com o output testado em alguns exemplos de Latex.)
+
+>Subtituição de símbolos especiais;
 
 //===================================================================================
 	REPRESENTACAO INTERMEDIA
 //===================================================================================
 
-Uma classe denominada Item, definida no Item.java, contem a os parametros necessarios para guardar
+Uma classe denominada Item, definida no Item.java, contem a os parâmetros necessários para guardar
 a informação de um item. 
 
-As referencias bibliográficas são passadas para como sendo Itemss para um ArrayList 
+As referencias bibliográficas são passadas para como sendo Items para um ArrayList 
 à medida que são apanhados durante o Parsing. 
 
 As @string são guardados em dois ArrayLists de Strings à medida que são apanhadas
 durante o Parsing.
-
-...??? anything missing here ...???
 
 //===================================================================================
 	GERACAO DE CODIGO
@@ -235,14 +261,16 @@ Também podem ser verificados o tratamento de erros na compilação.
 	NOTAS ADICIONAIS
 //===================================================================================
 
-Alguns promenores ficaram itencionalmente diferentes face ao Bibtex/Latex itencionalmente.
-Achamos que não fazia sentido permitir newlines ou impedir o @ quando se usam chavetas.
+Alguns promenores ficaram itencionalmente diferentes face ao Bibtex/Latex.
+Achamos que não fazia sentido permitir newlines ou impedir a escrita de @ quando se usam chavetas.
 
 //===================================================================================
 	PONTOS POSITIVOS
 //===================================================================================
 
-Trabalho razoavelmente completo. 
+Trabalho razoavelmente completo.
+Apresenta ao utilizador feedback razoável sobre os erros encontrados e é compativel
+com a maior parte das funcionalidades que podem já vir definidas para Latex.
 
 //===================================================================================
 	PONTOS NEGATIVOS
@@ -250,18 +278,5 @@ Trabalho razoavelmente completo.
 
 Não averiguamos o possível uso de @preambles.
 Poderá não fazer sentido para o projeto em causa.
-
-Erros do tipo:
-	@tipo{id,entry="value 
-		ou
-	@string{id="value 
-		etc...
-... onde falta o fecho do valor da entry. São dificeis de notificar ao utilizador pois nada garante
-que o que procede não é efectivamente a string pretendida. Assim sendo existe na maioria
-das vezes a notificação de um erro que aparece consequentemente a este específico mas cuja identificação
-poderá não ser muito perceptivel ao utilizador. Idealente talvez podessemos tentar identificá-los com
-algumas considerações, como o comprimento do valor da entry, mas deixamos tal abordagem por implementar.
-	
-
 
 

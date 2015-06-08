@@ -1,6 +1,0 @@
-@book{osserman1969,
-    author  = "Robert Osserman",
-    title   = "A Survey of Minimal Surfaces",
-    publisher = "Van Nostrand Reinhold Company",
-    year    = "1969",
-}

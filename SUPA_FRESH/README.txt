@@ -269,7 +269,7 @@ com o output testado em alguns exemplos de Latex.)
 Uma classe denominada Item, definida no Item.java, contem a os parâmetros necessários para guardar
 a informação de um item. 
 
-As referencias bibliográficas são passadas para como sendo Items para um ArrayList 
+As referencias bibliográficas são passadas como sendo Items para um ArrayList 
 à medida que são apanhados durante o Parsing. 
 
 As @string são guardados em dois ArrayLists de Strings à medida que são apanhadas
@@ -314,21 +314,26 @@ caso este fosse desenvolvido por nós, que já esperamos certos padrões e não conh
 todos os detalhes de LateX. Assim, considerando exemplos reais, conseguimos uma visão
 mais realista do que o nosso compilador consegue ou não realizar.
 
-
 //===================================================================================
 	ARQUITETURA
 //===================================================================================
 		
-É chamado o parser definido em javacc para realizar que realiza a análise sintática e léxical,
-passando os diversos items do ficheiro original para as estruturas de representação intermédia.
+É chamado o parser definido em javacc para realizar a análise sintática e léxical,
+passando os diversos items do ficheiro de input para as estruturas de representação intermédia.
 
-Como já explicado anteriormente esta análise ocorre em "camadas". 
+Como já explicado anteriormente esta análise ocorre em "camadas".
+Segmentos com problemas são descartados passando a análise para um bloco válido mais à frente. 
+
 Ao analisar o valor/info de uma entry são usadas variáveis auxiliares de modo a permitir 
 a concatenação de vários bocos de texto e/ou referências a @string.
-
 Durante esta análise também se realizam algumas verificações semânticas, nomeadamente, verifica-se
 se todas as referências a @strings são válidas analisando a lista de @strings actual. 
 Se forem válidas o seu valor é adicionado ao valor/info da entry.
+
+Terminada a análise procede-se a análise semânticas onde se percorrer os items todos para
+encontrar possíveis erros como falta de entries obrigatórias, entries repetidas ou crossreferences 
+a items não definidos. Neste último caso a lista precisa de ser percorrida para confirmar a existência
+do item.
 		
 //===================================================================================
 	NOTAS ADICIONAIS
@@ -371,4 +376,4 @@ exemplos:
  não são considerados. A lista é extensa e depende sempre da versão do Latex considerada.
  
  >Um problema que foi descoberto na fase de testes é que "tags" (ex:\em) que não sejam 
- contempldas na nossa gramática descartam provcam problemas.
+ contempldas na nossa gramática provocam problemas (podendo descartar todo o output).

@@ -1032,6 +1032,7 @@ public class Item{
 							+ " \n    </thead>"
 							+ " \n   <tbody>"
 							);
+							break;
 
 							case 10: //manual
 							out.println("<!DOCTYPE html>"

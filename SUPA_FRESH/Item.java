@@ -2051,17 +2051,19 @@ public class Item{
 						java.io.PrintWriter table =  OutFiles.get(3);
 						table.println("<tr>"+
 						"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("author") +"</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("edition") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2078,17 +2080,14 @@ public class Item{
 
 						case booklet:
 						java.io.PrintWriter table =  OutFiles.get(4); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("howpublished") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2103,17 +2102,20 @@ public class Item{
 
 						case conference:
 						java.io.PrintWriter table =  OutFiles.get(5); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("booktitle") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("pages") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2133,33 +2135,36 @@ public class Item{
 
 						case electronic: //electronic does not export 2 raw
 						java.io.PrintWriter table =  OutFiles.get(6); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("language") + "</td>" +
+						"<td>" + getEntry("howpublished") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 						break;
 
 						case inbook:
 						java.io.PrintWriter table =  OutFiles.get(7); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("chapter") +"</td>" +
+						"<td>" + getEntry("pages") + "</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("type") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("edition") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2178,17 +2183,22 @@ public class Item{
 
 						case incollection:
 						java.io.PrintWriter table =  OutFiles.get(8); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("author") +"</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("booktitle") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("type") + "</td>" +
+						"<td>" + getEntry("chapter") + "</td>" +
+						"<td>" + getEntry("pages") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("edition") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2210,33 +2220,34 @@ public class Item{
 
 						case inproceedings: //does not export to raw.html
 						java.io.PrintWriter table =  OutFiles.get(9); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("author") +"</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("pages") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 						break;
 
 						case manual:
 						java.io.PrintWriter table =  OutFiles.get(10); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("edition") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2252,17 +2263,15 @@ public class Item{
 
 						case mastersthesis:
 						java.io.PrintWriter table =  OutFiles.get(11); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("school") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("type") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(

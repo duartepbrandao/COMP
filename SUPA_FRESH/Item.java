@@ -125,6 +125,7 @@ public class Item{
 							out.println("<!DOCTYPE html>");
 							out.println("<html>");
 							out.println("<body>\n");
+							break;
 
 
 							case 2: //article.html
@@ -1033,7 +1034,7 @@ public class Item{
 							+ " \n   <tbody>"
 							);
 							break;
-
+							
 							case 10: //manual
 							out.println("<!DOCTYPE html>"
 							+ "\n <html>"
@@ -1623,6 +1624,10 @@ public class Item{
 							+ " \n  {"
 							+ " \n    \"targets\": [ 8 ],"
 							+ " \n    \"visible\": false"
+							+ " \n  },"
+							+ " \n  {"
+							+ " \n    \"targets\": [ 9 ],"
+							+ " \n    \"visible\": false"
 							+ " \n  }"
 							+ " \n  ]}"
 							+ " \n);"
@@ -1656,11 +1661,11 @@ public class Item{
 							+ " \n    </div>"
 							+ " \n    <div>Optional:"
 							+ " \n      <!--Optional Fields  -->"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Type </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"5\"> Address </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"6\"> Month </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"7\"> Note </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"8\"> URL </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"5\"> Type </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"6\"> Address </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"7\"> Month </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"8\"> Note </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"9\"> URL </a>"
 							+ " \n    </div>"
 							+ " \n  </div>"
 							+ " \n  <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
@@ -2150,18 +2155,18 @@ public class Item{
 			public String replaceSpecialCharacteres(String str)
 			{
 				//(not used) javac -encoding UTF8
-				str = str.replace("\\¬¥a","√°").replace("\\'a","√†");
-				str = str.replace("\\~a","√£").replace("\\^a","√¢");
-				str = str.replace("\\'e","√©").replace("\\^e","√™");
-				str = str.replace("\\¬¥{\\i}","√≠").replace("\\¬¥I","√ç");
-				str = str.replace("\\¬¥o","√µ").replace("\\~o","√É¬µ");
-				str = str.replace("\\^o","√¥").replace("\\¬¥u","√∫");
-				str = str.replace("\\\"u","√º").replace("\\c{c}","√ß");
-				str = str.replace("\\c{C}","√á").replace("{\"}","\"");
-				str = str.replace("\\endash","‚Äì").replace("\\emdash","‚Äî");
+				str = str.replace("\\¥a","·").replace("\\'a","‡");
+				str = str.replace("\\~a","„").replace("\\^a","‚");
+				str = str.replace("\\'e","È").replace("\\^e","Í");
+				str = str.replace("\\¥{\\i}","Ì").replace("\\¥I","Õ");
+				str = str.replace("\\¥o","ı").replace("\\~o","√µ");
+				str = str.replace("\\^o","Ù").replace("\\¥u","˙");
+				str = str.replace("\\\"u","¸").replace("\\c{c}","Á"); 
+				str = str.replace("\\c{C}","«").replace("{\"}","\"");
+				str = str.replace("\\endash","ñ").replace("\\emdash","ó");
 				str = str.replace("\\-","-").replace("\\#","#");
 				str = str.replace("\\&","&").replace("\\$","$");
-				str = str.replace("\\~n","√±").replace("\\dots","...").replace("\\-","-");
+				str = str.replace("\\~n","Ò").replace("\\dots","...").replace("\\-","-");
 				return str;
 			}
 			/*
@@ -2223,9 +2228,9 @@ public class Item{
 
 					switch(type)
 					{
-						// ALGUMA ALTERAÔøΩÔøΩO POR SEREM OPCIONAIS???
+						// ALGUMA ALTERA??O POR SEREM OPCIONAIS???
 						case article:
-						java.io.PrintWriter table =  OutFiles.get(2);
+						 table =  OutFiles.get(2);
 						table.println("<tr>"+
 						"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") + "</td>" +
@@ -2254,7 +2259,7 @@ public class Item{
 						break;
 
 						case book:
-						java.io.PrintWriter table =  OutFiles.get(3);
+						 table =  OutFiles.get(3);
 						table.println("<tr>"+
 						"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") +"</td>" +
@@ -2285,7 +2290,7 @@ public class Item{
 						break;
 
 						case booklet:
-						java.io.PrintWriter table =  OutFiles.get(4); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(4); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("author") + "</td>" +
 						"<td>" + getEntry("howpublished") + "</td>" +
@@ -2307,7 +2312,7 @@ public class Item{
 						break;
 
 						case conference:
-						java.io.PrintWriter table =  OutFiles.get(5); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(5); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("author") + "</td>" +
 						"<td>" + getEntry("booktitle") + "</td>" +
@@ -2340,7 +2345,7 @@ public class Item{
 						break;
 
 						case electronic: //electronic does not export 2 raw
-						java.io.PrintWriter table =  OutFiles.get(6); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(6); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("author") + "</td>" +
 						"<td>" + getEntry("month") + "</td>" +
@@ -2354,7 +2359,7 @@ public class Item{
 						break;
 
 						case inbook:
-						java.io.PrintWriter table =  OutFiles.get(7); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(7); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("chapter") +"</td>" +
 						"<td>" + getEntry("pages") + "</td>" +
 						"<td>" + getEntry("title") + "</td>" +
@@ -2388,7 +2393,7 @@ public class Item{
 						break;
 
 						case incollection:
-						java.io.PrintWriter table =  OutFiles.get(8); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(8); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") +"</td>" +
 						"<td>" + getEntry("title") + "</td>" +
 						"<td>" + getEntry("booktitle") + "</td>" +
@@ -2425,7 +2430,7 @@ public class Item{
 
 
 						case inproceedings: //does not export to raw.html
-						java.io.PrintWriter table =  OutFiles.get(9); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(9); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") +"</td>" +
 						"<td>" + getEntry("title") + "</td>" +
 						"<td>" + getEntry("year") + "</td>" +
@@ -2444,7 +2449,7 @@ public class Item{
 						break;
 
 						case manual:
-						java.io.PrintWriter table =  OutFiles.get(10); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(10); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("author") + "</td>" +
 						"<td>" + getEntry("organization") + "</td>" +
@@ -2468,7 +2473,7 @@ public class Item{
 						break;
 
 						case mastersthesis:
-						java.io.PrintWriter table =  OutFiles.get(11); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(11); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("author") + "</td>" +
 						"<td>" + getEntry("school") + "</td>" +
@@ -2491,7 +2496,7 @@ public class Item{
 						break;
 
 						case misc:
-						java.io.PrintWriter table =  OutFiles.get(12); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(12); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") +"</td>" +
 						"<td>" + getEntry("title") + "</td>" +
 						"<td>" + getEntry("howpublished") + "</td>" +
@@ -2511,7 +2516,7 @@ public class Item{
 						break;
 
 						case patent: //does not export 2 raw.html
-						java.io.PrintWriter table =  OutFiles.get(13); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(13); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("nationality") + "</td>" +
 						"<td>" + getEntry("number") + "</td>" +
 						"<td>" + getEntry("year") + "</td>" +
@@ -2534,7 +2539,7 @@ public class Item{
 
 
 						case periodical: //does not export 2 raw.html
-						java.io.PrintWriter table =  OutFiles.get(14); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(14); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("year") + "</td>" +
 						"<td>" + getEntry("editor") + "</td>" +
@@ -2550,7 +2555,7 @@ public class Item{
 						break;
 
 						case phdthesis:
-						java.io.PrintWriter table =  OutFiles.get(15); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(15); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("author") +"</td>" +
 						"<td>" + getEntry("title") + "</td>" +
 						"<td>" + getEntry("school") + "</td>" +
@@ -2558,6 +2563,7 @@ public class Item{
 						"<td>" + getEntry("type") + "</td>" +
 						"<td>" + getEntry("address") + "</td>" +
 						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
 						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
@@ -2572,7 +2578,7 @@ public class Item{
 						break;
 
 						case proceedings:
-						java.io.PrintWriter table =  OutFiles.get(16); table.println("<tr>"+	"<td>" + id + "</td>" +
+						 table =  OutFiles.get(16); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
 						"<td>" + getEntry("year") + "</td>" +
 						"<td>" + getEntry("editor") + "</td>" +
@@ -2601,7 +2607,7 @@ public class Item{
 						break;
 
 						case techreport:
-						/*java.io.PrintWriter table =  OutFiles.get(17); table.println("<tr>"+	"<td>" + id + "</td>" +
+						/* table =  OutFiles.get(17); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
@@ -2627,7 +2633,7 @@ public class Item{
 						break;
 
 						case unpublished:
-						/*java.io.PrintWriter table =  OutFiles.get(18); table.println("<tr>"+	"<td>" + id + "</td>" +
+						/* table =  OutFiles.get(18); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +

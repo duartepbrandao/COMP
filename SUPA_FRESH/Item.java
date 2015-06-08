@@ -1671,14 +1671,14 @@ public class Item{
 							+ " \n    <div> Required:"
 							+ " \n"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Year </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Editor </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Year </a>"
 							+ " \n"
 							+ " \n"
 							+ " \n    </div>"
 							+ " \n    <div>Optional:"
 							+ " \n      <!--Optional Fields  -->"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Editor </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Language </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"5\"> Series </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"6\"> Volume </a>"
@@ -2332,33 +2332,33 @@ public class Item{
 						
 						case periodical: //does not export 2 raw.html
 						java.io.PrintWriter table =  OutFiles.get(14); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("language") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 						break;
 						
 						case phdthesis:
 						java.io.PrintWriter table =  OutFiles.get(15); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("language") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2373,17 +2373,18 @@ public class Item{
 
 						case proceedings:
 						java.io.PrintWriter table =  OutFiles.get(16); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("editor") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("series") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("publisher") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(

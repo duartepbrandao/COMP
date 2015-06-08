@@ -97,6 +97,46 @@ Ordenação por uma entry qualquer “on the fly”;
 Ocultar ou mostrar tipos de entries específicos;
 Pesquisar por palavras.
 
+
+//===================================================================================
+	EXEMPLOS
+//===================================================================================
+
+A fim de mostrar as funcionalidades foram preparados diversos exemplos que podem ser 
+encontrados na pasta examples:
+
+	>test1.bib: 
+
+Este ficheiro imprime um exemplo dado no site "https://verbosus.com/bibtex-style-examples.html".
+Pretende mostrar um exemplo de compilação de vários items de diferentes tipos sem erros.
+Apresenta apenas um erro devido a primeira linha que faz referência ao sitio web e 
+avisos face a algumas entries obrigatórias estarem em falta.
+	
+	>test2.bib: 
+	
+Este ficheiro pretende demonstrar todas as funcionalidades do nosso projeto.
+Ele mistura os diversos tipos de erros que podem aparecer com items corretamente escritos, 
+com subtituições de @strings, crossreferences, concatenações de @strings com texto e
+texto a sublinhado, negrito e /ou itálico. Analisando o output é possível verificar
+que os items bem contruidos são apresentados no output e que os outros são descartados.
+Também podem ser verificados o tratamento de erros na compilação.
+
+	>Outros: some<theme> .bib
+	Partes (algumas modificadas) de bibliografias presentes em "http://www.netlib.org/tex/bib/".
+	Os exemplos podem ser encontrados na sua forma completa nas páginas:
+		http://ftp.math.utah.edu/pub/tex/bib/csharp.html
+		http://ftp.math.utah.edu/pub/tex/bib/fortran3.html
+		http://ftp.math.utah.edu/pub/tex/bib/texbook3.html
+		http://ftp.math.utah.edu/pub/tex/bib/elefunt.html
+		http://ftp.math.utah.edu/pub/tex/bib/fparith.html
+
+Este conjunto de ficheiros pretende demonstrar que o compilador consegue 
+tratar bibliografias reais.
+Alguns items apresentam entries não consideradas e também não são usados
+@preambles, mas dentro dos possíveis é realizado o output até chegar ao
+último item.
+
+
 //===================================================================================
 	ANALISE LEXICAL E SINTATICA
 //===================================================================================
@@ -226,9 +266,6 @@ com o output testado em alguns exemplos de Latex.)
 	REPRESENTACAO INTERMEDIA
 //===================================================================================
 
-(Não é usada uma "verdadeira" linguagem intermédia dada a simplcdade do trabalho, no 
-entanto são usadas estruturas que acabam por apresentar uma funcionalidade semelhante)
-
 Uma classe denominada Item, definida no Item.java, contem a os parâmetros necessários para guardar
 a informação de um item. 
 
@@ -262,37 +299,37 @@ para o raw.html. É também relizado outro output para tabelas html num ficheiro p
 
 >Substituições de abreviaturas de meses são realizadas durabte o Parsing enquanto se passam os 
 dados para a "linguagem intermedia". 
-
+		
+		
 //===================================================================================
 	TESTES
+//===================================================================================		
+		
+Os testes realizados tiveram que ser feitos à mão ou usando exemplos já existentes,
+nomeadamente partes de bibliiografias reais que se podem encontram em 
+"http://www.netlib.org/tex/bib/". 
+
+Não automatizamos o processo pois seria difícil de obter padrões fora do vulgar
+caso este fosse desenvolvido por nós, que já esperamos certos padrões e não conhecemos 
+todos os detalhes de LateX. Assim, considerando exemplos reais, conseguimos uma visão
+mais realista do que o nosso compilador consegue ou não realizar.
+
+
 //===================================================================================
+	ARQUITETURA
+//===================================================================================
+		
+É chamado o parser definido em javacc para realizar que realiza a análise sintática e léxical,
+passando os diversos items do ficheiro original para as estruturas de representação intermédia.
 
-A fim de mostrar as funcionalidades foram preparados diversos exemplos que podem ser 
-encontrados na pasta examples:
+Como já explicado anteriormente esta análise ocorre em "camadas". 
+Ao analisar o valor/info de uma entry são usadas variáveis auxiliares de modo a permitir 
+a concatenação de vários bocos de texto e/ou referências a @string.
 
-	>test1.bib: 
-
-Este ficheiro imprime um exemplo dado no site "https://verbosus.com/bibtex-style-examples.html".
-Pretende mostrar um exemplo de compilação de vários items de diferentes tipos sem erros.
-Apresenta apenas um erro devido a primeira linha que faz referência ao sitio web e 
-avisos face a algumas entries obrigatórias estare em falta.
-	
-	>test2.bib: 
-	
-Este ficheiro pretende demonstrar todas as funcionalidades do nosso projeto.
-Ele mistura os diversos tipos de erros que podem aparecer com items corretamente escritos, 
-com subtituições de @strings, crossreferences, concatenações de @strings com texto e
-texto a sublinhado, negrito e /ou itálico. Analisando o output é possível verificar
-que os items bem contruidos são apresentados no output e que os outros são descartados.
-Também podem ser verificados o tratamento de erros na compilação.
-
-	>:Outros 
-	Partes (algumas modificadas) de bibliografias presentes em "http://www.netlib.org/tex/bib/".
-		http://ftp.math.utah.edu/pub/tex/bib/csharp.html
-		http://ftp.math.utah.edu/pub/tex/bib/fortran3.html
-		http://ftp.math.utah.edu/pub/tex/bib/texbook3.html
-		http://ftp.math.utah.edu/pub/tex/bib/elefunt.html
-
+Durante esta análise também se realizam algumas verificações semânticas, nomeadamente, verifica-se
+se todas as referências a @strings são válidas analisando a lista de @strings actual. 
+Se forem válidas o seu valor é adicionado ao valor/info da entry.
+		
 //===================================================================================
 	NOTAS ADICIONAIS
 //===================================================================================
@@ -332,3 +369,6 @@ exemplos:
 
  >Algumas funcionlidades como a referida acima e alguns caracteres especiais
  não são considerados. A lista é extensa e depende sempre da versão do Latex considerada.
+ 
+ >Um problema que foi descoberto na fase de testes é que "tags" (ex:\em) que não sejam 
+ contempldas na nossa gramática descartam provcam problemas.

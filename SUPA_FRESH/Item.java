@@ -1939,17 +1939,18 @@ public class Item{
 			public String replaceSpecialCharacteres(String str)
 			{
 				//(not used) javac -encoding UTF8
-				str = str.replace("\\ï¿½a","ï¿½").replace("\\'a","ï¿½");
-				str = str.replace("\\~a","ï¿½").replace("\\^a","ï¿½");
-				str = str.replace("\\'e","ï¿½").replace("\\^e","ï¿½");
-				str = str.replace("\\ï¿½{\\i}","ï¿½").replace("\\ï¿½I","ï¿½");
-				str = str.replace("\\ï¿½o","ï¿½").replace("\\~o","Ãµ");
-				str = str.replace("\\^o","ï¿½").replace("\\ï¿½u","ï¿½");
-				str = str.replace("\\\"u","ï¿½").replace("\\c{c}","ï¿½");
-				str = str.replace("\\c{C}","ï¿½").replace("{\"}","\"");
-				str = str.replace("\\endash","ï¿½").replace("\\emdash","ï¿½");
-				str = str.replace("\\-","-").replace("\\#","#");
-				str = str.replace("\\&","&").replace("\\$","$").replace("\\dots","...");
+			str = str.replace("\\´a","á").replace("\\'a","à");
+			str = str.replace("\\~a","ã").replace("\\^a","â");
+			str = str.replace("\\'e","é").replace("\\^e","ê");
+			str = str.replace("\\´{\\i}","í").replace("\\´I","Í");
+			str = str.replace("\\´o","õ").replace("\\~o","Ãµ");
+			str = str.replace("\\^o","ô").replace("\\´u","ú");
+			str = str.replace("\\\"u","ü").replace("\\c{c}","ç"); 
+			str = str.replace("\\c{C}","Ç").replace("{\"}","\"");
+			str = str.replace("\\endash","–").replace("\\emdash","—");
+			str = str.replace("\\-","-").replace("\\#","#");
+			str = str.replace("\\&","&").replace("\\$","$");
+			str = str.replace("\\~n","ñ").replace("\\dots","...").replace("\\-","-");
 				return str;
 			}
 			/*

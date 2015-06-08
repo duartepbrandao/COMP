@@ -1609,14 +1609,6 @@ public class Item{
 							+ " \n"
 							+ " \n  \"columnDefs\": ["
 							+ " \n  {"
-							+ " \n    \"targets\": [ 3 ],"
-							+ " \n    \"visible\": false"
-							+ " \n  },"
-							+ " \n  {"
-							+ " \n    \"targets\": [ 4 ],"
-							+ " \n    \"visible\": false"
-							+ " \n  },"
-							+ " \n  {"
 							+ " \n    \"targets\": [ 5 ],"
 							+ " \n    \"visible\": false"
 							+ " \n  },"
@@ -1630,18 +1622,6 @@ public class Item{
 							+ " \n  },"
 							+ " \n  {"
 							+ " \n    \"targets\": [ 8 ],"
-							+ " \n    \"visible\": false"
-							+ " \n  },"
-							+ " \n  {"
-							+ " \n    \"targets\": [ 9 ],"
-							+ " \n    \"visible\": false"
-							+ " \n  },"
-							+ " \n  {"
-							+ " \n    \"targets\": [ 10 ],"
-							+ " \n    \"visible\": false"
-							+ " \n  },"
-							+ " \n  {"
-							+ " \n    \"targets\": [ 11 ],"
 							+ " \n    \"visible\": false"
 							+ " \n  }"
 							+ " \n  ]}"
@@ -1667,22 +1647,20 @@ public class Item{
 							+ " \n    <div> Required:"
 							+ " \n"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Editor </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> School </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Year </a>"
 							+ " \n"
 							+ " \n"
 							+ " \n    </div>"
 							+ " \n    <div>Optional:"
 							+ " \n      <!--Optional Fields  -->"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Language </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"5\"> Series </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"6\"> Volume </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"7\"> Number </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"8\"> Organization </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"9\"> Month </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"10\"> Note </a>"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"11\"> URL </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"4\"> Type </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"5\"> Address </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"6\"> Month </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"7\"> Note </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"8\"> URL </a>"
 							+ " \n    </div>"
 							+ " \n  </div>"
 							+ " \n  <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
@@ -2277,17 +2255,13 @@ public class Item{
 
 						case misc:
 						java.io.PrintWriter table =  OutFiles.get(12); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("author") +"</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("howpublished") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
 						outraw.println(
@@ -2301,17 +2275,23 @@ public class Item{
 
 						case patent: //does not export 2 raw.html
 						java.io.PrintWriter table =  OutFiles.get(13); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry +"</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
-						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry("nationality") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("yearfilled") + "</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("language") + "</td>" +
+						"<td>" + getEntry("assignee") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
+						"<td>" + getEntry("type") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
+						"<td>" + getEntry("day") + "</td>" +
+						"<td>" + getEntry("dayfilled") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("monthfilled") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 						break;
 
@@ -2334,16 +2314,13 @@ public class Item{
 
 						case phdthesis:
 						java.io.PrintWriter table =  OutFiles.get(15); table.println("<tr>"+	"<td>" + id + "</td>" +
-						"<td>" + getEntry("title") +"</td>" +
+						"<td>" + getEntry("author") +"</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("school") + "</td>" +
 						"<td>" + getEntry("year") + "</td>" +
-						"<td>" + getEntry("editor") + "</td>" +
-						"<td>" + getEntry("language") + "</td>" +
-						"<td>" + getEntry("series") + "</td>" +
-						"<td>" + getEntry("volume") + "</td>" +
-						"<td>" + getEntry("number") + "</td>" +
-						"<td>" + getEntry("organization") + "</td>" +
+						"<td>" + getEntry("type") + "</td>" +
+						"<td>" + getEntry("address") + "</td>" +
 						"<td>" + getEntry("month") + "</td>" +
-						"<td>" + getEntry("note") + "</td>" +
 						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 
@@ -2387,7 +2364,7 @@ public class Item{
 						break;
 
 						case techreport:
-						java.io.PrintWriter table =  OutFiles.get(17); table.println("<tr>"+	"<td>" + id + "</td>" +
+						/*java.io.PrintWriter table =  OutFiles.get(17); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
@@ -2399,7 +2376,7 @@ public class Item{
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
-						"</tr>" );
+						"</tr>" );*/
 
 						outraw.println(
 						getEntry("author")+"."
@@ -2413,7 +2390,7 @@ public class Item{
 						break;
 
 						case unpublished:
-						java.io.PrintWriter table =  OutFiles.get(18); table.println("<tr>"+	"<td>" + id + "</td>" +
+						/*java.io.PrintWriter table =  OutFiles.get(18); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
@@ -2425,7 +2402,7 @@ public class Item{
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
 						"<td>" + getEntry + "</td>" +
-						"</tr>" );
+						"</tr>" );*/
 
 						outraw.println(
 						getEntry("author")+"."

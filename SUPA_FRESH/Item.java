@@ -117,7 +117,8 @@ public class Item{
 							+"\n	</p>"
 							+"\n	<p>"
 							+"\n	<a href=\"proceedings.html\">proceedings</a>"
-							+"\n	</p>");
+							+"\n	</p>"
+							);
 							break;
 
 
@@ -217,7 +218,8 @@ public class Item{
 							+" \n	<th>Note</th>"
 							+" \n	<th>URL</th>"
 							+" \n	</tr>"
-							+" \n	</thead> ");
+							+" \n	</thead> "
+							+ " \n   <tbody>");
 							break;
 
 							case 3: //book.html
@@ -288,7 +290,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"3\"> Editor </a>"
@@ -311,7 +313,7 @@ public class Item{
 							+ " \n   <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
 							+ " \n     <thead>"
 							+ " \n       <tr>"
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Author</th>"
 							+ " \n         <th>Title</th>"
 							+ " \n         <th>Editor</th>"
@@ -327,6 +329,7 @@ public class Item{
 							+ " \n         <th>URL</th>"
 							+ " \n       </tr>"
 							+ " \n     </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -391,7 +394,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ " \n "
 							+ " \n     </div>"
@@ -409,7 +412,7 @@ public class Item{
 							+ " \n   <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
 							+ " \n     <thead>"
 							+ " \n       <tr>"
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Title</th>"
 							+ " \n         <th>Author</th>"
 							+ " \n         <th>HowPublished</th>"
@@ -420,7 +423,7 @@ public class Item{
 							+ " \n         <th>URL</th>"
 							+ " \n       </tr>"
 							+ " \n     </thead>"
-							+ " \n" );
+							+ " \n   <tbody>");
 							break;
 
 							case 5: //conference
@@ -499,7 +502,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Author </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Booktitle </a>"
@@ -523,7 +526,7 @@ public class Item{
 							+ " \n  <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
 							+ " \n    <thead>"
 							+ " \n      <tr>"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Author</th>"
 							+ " \n        <th>Booktitle</th>"
@@ -538,6 +541,7 @@ public class Item{
 							+ " \n        <th>URL</th>"
 							+ " \n      </tr>"
 							+ " \n    </thead> "
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -614,7 +618,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n"
 							+ " \n"
 							+ " \n    </div>"
@@ -635,7 +639,7 @@ public class Item{
 							+ " \n    <thead>"
 							+ " \n      <tr>"
 							+ " \n"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Author</th>"
 							+ " \n        <th>Language</th>"
@@ -648,6 +652,7 @@ public class Item{
 							+ " \n"
 							+ " \n      </tr>"
 							+ " \n    </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -723,7 +728,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Chapter </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Pages </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Title </a>"
@@ -751,7 +756,7 @@ public class Item{
 							+ " \n    <thead>"
 							+ " \n      <tr>"
 							+ " \n"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Chapter</th>"
 							+ " \n        <th>Pages</th>"
 							+ " \n        <th>Title</th>"
@@ -771,6 +776,7 @@ public class Item{
 							+ " \n"
 							+ " \n      </tr>"
 							+ " \n    </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -854,7 +860,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Book Title </a>"
@@ -881,7 +887,7 @@ public class Item{
 							+ " \n    <thead>"
 							+ " \n      <tr>"
 							+ " \n"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Author</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Book</th>"
@@ -900,7 +906,8 @@ public class Item{
 							+ " \n        <th>Note</th>"
 							+ " \n"
 							+ " \n      </tr>"
-							+ " \n    </thead>");
+							+ " \n    </thead>"
+							+ " \n   <tbody>");
 							break;
 
 							case 9: //inproceedings
@@ -983,7 +990,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"3\"> Year </a>"
@@ -1007,7 +1014,7 @@ public class Item{
 							+ " \n  <table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
 							+ " \n    <thead>"
 							+ " \n      <tr>"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Author</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Year</th>"
@@ -1024,6 +1031,7 @@ public class Item{
 							+ " \n        <th>URL</th>"
 							+ " \n      </tr>"
 							+ " \n    </thead>"
+							+ " \n   <tbody>"
 							);
 
 							case 10: //manual
@@ -1094,7 +1102,7 @@ public class Item{
 							+ "\n   <div>Filters"
 							+ "\n     <div> Required:"
 							+ "\n "
-							+ "\n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ "\n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ "\n       <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ "\n "
 							+ "\n     </div>"
@@ -1114,7 +1122,7 @@ public class Item{
 							+ "\n     <thead>"
 							+ "\n       <tr>"
 							+ "\n "
-							+ "\n         <th>Crossref</th>"
+							+ "\n         <th>BibtexKey</th>"
 							+ "\n         <th>Title</th>"
 							+ "\n         <th>Author</th>"
 							+ "\n         <th>Organization</th>"
@@ -1129,6 +1137,7 @@ public class Item{
 							+ "\n "
 							+ "\n       </tr>"
 							+ "\n     </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -1188,7 +1197,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"3\"> School </a>"
@@ -1208,7 +1217,7 @@ public class Item{
 							+ " \n     <thead>"
 							+ " \n       <tr>"
 							+ " \n "
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Author</th>"
 							+ " \n         <th>Title</th>"
 							+ " \n         <th>School</th>"
@@ -1223,6 +1232,7 @@ public class Item{
 							+ " \n "
 							+ " \n       </tr>"
 							+ " \n     </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -1290,7 +1300,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n "
 							+ " \n "
 							+ " \n     </div>"
@@ -1309,7 +1319,7 @@ public class Item{
 							+ " \n     <thead>"
 							+ " \n       <tr>"
 							+ " \n "
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Author</th>"
 							+ " \n         <th>Title</th>"
 							+ " \n         <th>HowPublished</th>"
@@ -1322,7 +1332,8 @@ public class Item{
 							+ " \n "
 							+ " \n "
 							+ " \n       </tr>"
-							+ " \n     </thead>");
+							+ " \n     </thead>"
+							+ " \n   <tbody>");
 							break;
 
 							case 13: // patent
@@ -1413,7 +1424,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"1\"> Nationality </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"2\"> Number </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"3\"> Year </a>"
@@ -1442,7 +1453,7 @@ public class Item{
 							+ " \n     <thead>"
 							+ " \n       <tr>"
 							+ " \n "
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Nationality</th>"
 							+ " \n         <th>Number</th>"
 							+ " \n         <th>Year</th>"
@@ -1466,6 +1477,7 @@ public class Item{
 							+ " \n "
 							+ " \n       </tr>"
 							+ " \n     </thead> "
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -1541,7 +1553,7 @@ public class Item{
 							+ " \n   <div>Filters"
 							+ " \n     <div> Required:"
 							+ " \n "
-							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n       <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ " \n       <a class=\"toggle-vis\" data-column=\"2\"> Year </a>"
 							+ " \n "
@@ -1564,7 +1576,7 @@ public class Item{
 							+ " \n     <thead>"
 							+ " \n       <tr>"
 							+ " \n "
-							+ " \n         <th>Crossref</th>"
+							+ " \n         <th>BibtexKey</th>"
 							+ " \n         <th>Title</th>"
 							+ " \n         <th>Year</th>"
 							+ " \n         <th>Editor</th>"
@@ -1582,6 +1594,7 @@ public class Item{
 							+ " \n         <th>URL</th>"
 							+ " \n       </tr>"
 							+ " \n     </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -1657,7 +1670,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Year </a>"
 							+ " \n"
@@ -1680,7 +1693,7 @@ public class Item{
 							+ " \n    <thead>"
 							+ " \n      <tr>"
 							+ " \n"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Year</th>"
 							+ " \n        <th>Editor</th>"
@@ -1700,7 +1713,8 @@ public class Item{
 							+ " \n"
 							+ " \n"
 							+ " \n      </tr>"
-							+ " \n    </thead>");
+							+ " \n    </thead>"
+							+ " \n   <tbody>");
 							break;
 
 							case 16: //proceedings
@@ -1779,7 +1793,7 @@ public class Item{
 							+ " \n  <div>Filters"
 							+ " \n    <div> Required:"
 							+ " \n"
-							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+ " \n      <a class=\"toggle-vis\" data-column=\"0\"> BibtexKey </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"1\"> Title </a>"
 							+ " \n      <a class=\"toggle-vis\" data-column=\"2\"> Year </a>"
 							+ " \n"
@@ -1803,7 +1817,7 @@ public class Item{
 							+ " \n    <thead>"
 							+ " \n      <tr>"
 							+ " \n"
-							+ " \n        <th>Crossref</th>"
+							+ " \n        <th>BibtexKey</th>"
 							+ " \n        <th>Title</th>"
 							+ " \n        <th>Year</th>"
 							+ " \n"
@@ -1823,6 +1837,7 @@ public class Item{
 							+ " \n        <th>URL</th>"
 							+ " \n      </tr>"
 							+ " \n    </thead>"
+							+ " \n   <tbody>"
 							);
 							break;
 
@@ -1939,18 +1954,18 @@ public class Item{
 			public String replaceSpecialCharacteres(String str)
 			{
 				//(not used) javac -encoding UTF8
-			str = str.replace("\\´a","á").replace("\\'a","à");
-			str = str.replace("\\~a","ã").replace("\\^a","â");
-			str = str.replace("\\'e","é").replace("\\^e","ê");
-			str = str.replace("\\´{\\i}","í").replace("\\´I","Í");
-			str = str.replace("\\´o","õ").replace("\\~o","Ãµ");
-			str = str.replace("\\^o","ô").replace("\\´u","ú");
-			str = str.replace("\\\"u","ü").replace("\\c{c}","ç"); 
-			str = str.replace("\\c{C}","Ç").replace("{\"}","\"");
-			str = str.replace("\\endash","–").replace("\\emdash","—");
+			str = str.replace("\\ï¿½a","ï¿½").replace("\\'a","ï¿½");
+			str = str.replace("\\~a","ï¿½").replace("\\^a","ï¿½");
+			str = str.replace("\\'e","ï¿½").replace("\\^e","ï¿½");
+			str = str.replace("\\ï¿½{\\i}","ï¿½").replace("\\ï¿½I","ï¿½");
+			str = str.replace("\\ï¿½o","ï¿½").replace("\\~o","Ãµ");
+			str = str.replace("\\^o","ï¿½").replace("\\ï¿½u","ï¿½");
+			str = str.replace("\\\"u","ï¿½").replace("\\c{c}","ï¿½");
+			str = str.replace("\\c{C}","ï¿½").replace("{\"}","\"");
+			str = str.replace("\\endash","ï¿½").replace("\\emdash","ï¿½");
 			str = str.replace("\\-","-").replace("\\#","#");
 			str = str.replace("\\&","&").replace("\\$","$");
-			str = str.replace("\\~n","ñ").replace("\\dots","...").replace("\\-","-");
+			str = str.replace("\\~n","ï¿½").replace("\\dots","...").replace("\\-","-");
 				return str;
 			}
 			/*
@@ -2013,6 +2028,20 @@ public class Item{
 					{
 						// ALGUMA ALTERAï¿½ï¿½O POR SEREM OPCIONAIS???
 						case article:
+						java.io.PrintWriter article =  OutFiles.get(2);
+						article.println("<tr>"+
+						"<td>" + id + "</td>" +
+						"<td>" + getEntry("author") + "</td>" +
+						"<td>" + getEntry("title") + "</td>" +
+						"<td>" + getEntry("journal") + "</td>" +
+						"<td>" + getEntry("year") + "</td>" +
+						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("pages") + "</td>" +
+						"<td>" + getEntry("month") + "</td>" +
+						"<td>" + getEntry("note") + "</td>" +
+						"<td>" + getEntry("url") + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title")+"</i>"+"."
@@ -2027,6 +2056,20 @@ public class Item{
 						break;
 
 						case book:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+ getEntry("title")
@@ -2040,6 +2083,20 @@ public class Item{
 						break;
 
 						case booklet:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+ getEntry("title") + "."
@@ -2051,6 +2108,21 @@ public class Item{
 						break;
 
 						case conference:
+
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+ getEntry("title") + "."
@@ -2067,6 +2139,21 @@ public class Item{
 						break;
 
 						case inbook:
+
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+ getEntry("title")
@@ -2082,6 +2169,21 @@ public class Item{
 						break;
 
 						case incollection:
+
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+ getEntry("title") + "."
@@ -2100,6 +2202,20 @@ public class Item{
 
 
 						case manual:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title")+"</i>"
@@ -2112,6 +2228,20 @@ public class Item{
 						break;
 
 						case mastersthesis:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title")+"</i>"+"."
@@ -2123,6 +2253,20 @@ public class Item{
 						break;
 
 						case misc:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")
 						+ getEntry("title",true)
@@ -2133,6 +2277,20 @@ public class Item{
 						break;
 
 						case phdthesis:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title")+"</i>"+"."
@@ -2144,6 +2302,20 @@ public class Item{
 						break;
 
 						case proceedings:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")
 						+ getEntry("editor",true)+"."
@@ -2158,6 +2330,20 @@ public class Item{
 						break;
 
 						case techreport:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title",true)+"</i>"
@@ -2170,6 +2356,20 @@ public class Item{
 						break;
 
 						case unpublished:
+						article.println("<tr>"+
+						"<td>" + getEntry +"</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"<td>" + getEntry + "</td>" +
+						"</tr>" );
+
 						outraw.println(
 						getEntry("author")+"."
 						+"<i>"+getEntry("title")+"</i>"

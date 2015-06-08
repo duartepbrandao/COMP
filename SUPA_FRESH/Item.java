@@ -185,7 +185,7 @@ public class Item{
 							+" \n	<div>Filters"
 							+" \n	<div> Required:"
 							+" \n"
-							+" \n	<a class=\"toggle-vis\" data-column=\"0\"> Crossref </a>"
+							+" \n	<a class=\"toggle-vis\" data-column=\"0\"> Bibtex key </a>"
 							+" \n	<a class=\"toggle-vis\" data-column=\"1\"> Author </a>"
 							+" \n	<a class=\"toggle-vis\" data-column=\"2\"> Title </a>"
 							+" \n	<a class=\"toggle-vis\" data-column=\"3\"> Journal </a>"
@@ -205,7 +205,7 @@ public class Item{
 							+" \n	<table id=\"article\" class=\"display\" cellspacing=\"0\" width=\"100%\">"
 							+" \n	<thead>"
 							+" \n	<tr>"
-							+" \n	<th>Crossref</th>"
+							+" \n	<th>Bibtex Key</th>"
 							+" \n	<th>Author</th>"
 							+" \n	<th>Title</th>"
 							+" \n	<th>Journal</th>"
@@ -2232,6 +2232,7 @@ public class Item{
 						"<td>" + getEntry("journal") + "</td>" +
 						"<td>" + getEntry("year") + "</td>" +
 						"<td>" + getEntry("volume") + "</td>" +
+						"<td>" + getEntry("number") + "</td>" +
 						"<td>" + getEntry("pages") + "</td>" +
 						"<td>" + getEntry("month") + "</td>" +
 						"<td>" + getEntry("note") + "</td>" +

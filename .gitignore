@@ -1,3 +1,9 @@
 helperIni.txt
-*.java
 *.class
+Exp1.java
+Exp1TokenManager.java
+Exp1Constants.java
+ParseException.java
+SimpleCharStream.java
+Token.java
+TokenMgrError.java

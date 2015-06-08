@@ -1841,11 +1841,12 @@ public class Item{
 				for(int i = OutFiles.size()-1; i>=0;--i)
 				{
 					java.io.PrintWriter  out=  OutFiles.get(i);
-					
+
 					if(i>1) {
 						out.println("</tbody>");
 						out.println("</table>");
-					}					
+
+					}
 					out.println("</body>\n");
 					out.println("</html>");
 					out.close();
@@ -1950,7 +1951,7 @@ public class Item{
 				str = str.replace("\\´{\\i}","í").replace("\\´I","Í");
 				str = str.replace("\\´o","õ").replace("\\~o","Ãµ");
 				str = str.replace("\\^o","ô").replace("\\´u","ú");
-				str = str.replace("\\\"u","ü").replace("\\c{c}","ç"); 
+				str = str.replace("\\\"u","ü").replace("\\c{c}","ç");
 				str = str.replace("\\c{C}","Ç").replace("{\"}","\"");
 				str = str.replace("\\endash","–").replace("\\emdash","—");
 				str = str.replace("\\-","-").replace("\\#","#");
@@ -2007,7 +2008,7 @@ public class Item{
 
 				java.io.PrintWriter outraw =  OutFiles.get(1);
 				java.io.PrintWriter table=null;
-				
+
 				String url = getEntry("url",false,true);
 				try{
 					outraw.println("<p id=\""+ (index+1) +"\">");
@@ -2145,7 +2146,7 @@ public class Item{
 						"<td>" + getEntry + "</td>" +
 						"</tr>" );
 						break;
-						
+
 						case inbook:
 						java.io.PrintWriter table =  OutFiles.get(7); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
@@ -2222,7 +2223,7 @@ public class Item{
 						"<td>" + getEntry + "</td>" +
 						"</tr>" );
 						break;
-						
+
 						case manual:
 						java.io.PrintWriter table =  OutFiles.get(10); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry +"</td>" +
@@ -2313,8 +2314,8 @@ public class Item{
 						"<td>" + getEntry + "</td>" +
 						"</tr>" );
 						break;
-						
-						
+
+
 						case periodical: //does not export 2 raw.html
 						java.io.PrintWriter table =  OutFiles.get(14); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +
@@ -2330,7 +2331,7 @@ public class Item{
 						"<td>" + getEntry("url") + "</td>" +
 						"</tr>" );
 						break;
-						
+
 						case phdthesis:
 						java.io.PrintWriter table =  OutFiles.get(15); table.println("<tr>"+	"<td>" + id + "</td>" +
 						"<td>" + getEntry("title") +"</td>" +

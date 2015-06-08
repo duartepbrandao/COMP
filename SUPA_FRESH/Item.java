@@ -182,7 +182,8 @@ str = str.replace("\\\"u","ü").replace("\\c{c}","ç");
 str = str.replace("\\c{C}","Ç").replace("{\"}","\"");
 str = str.replace("\\endash","–").replace("\\emdash","—");
 str = str.replace("\\-","-").replace("\\#","#");
-str = str.replace("\\&","&").replace("\\$","$").replace("\\dots","...");
+str = str.replace("\\&","&").replace("\\$","$");
+str = str.replace("\\~n","ñ").replace("\\dots","...").replace("\\-","-");
 return str;
 }
 /*

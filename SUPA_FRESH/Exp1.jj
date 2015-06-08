@@ -365,10 +365,13 @@ TOKEN:
  |("\\" "\"u")
  |("\\" "c{c}") 
  |("\\" "c{C}")
+ |("\\~n")
+ |("\\-")
+ |("\\" ["-","#","&","$"]) 
  |"\\emdash"|"\\endash"|"\\dots"
  //not used below... 
  |"\\slash"|"\\em"|"\\emph"|("\\" ["c","l","d"] "dots")
- |("\\" ["-","#","&","$"]) 
+ |"\\latex"|"\\tex"|"\\LaTeX"|"\\TeX"
  //not using \\ fr new lines, does not make much sense in this context
  >
 //|<INFO_ENTRY1:"\"" ((~["{","}","\""])|"{\"}")+ "\"" >:DEFAULT 
@@ -406,10 +409,13 @@ TOKEN:
  |("\\" "\"u")
  |("\\" "c{c}") 
  |("\\" "c{C}")
+ |("\\~n")
+ |("\\-")
+ |("\\" ["-","#","&","$"]) 
  |"\\emdash"|"\\endash"|"\\dots"
  //not used below... 
  |"\\slash"|"\\em"|"\\emph"|("\\" ["c","l","d"] "dots")
- |("\\" ["-","#","&","$"]) 
+ |"\\latex"|"\\tex"|"\\LaTeX"|"\\TeX"
  //not using \\ fr new lines, does not make much sense in this context
  >
 |<INFO2_BACK_DEFAULT: "" >:ITEM_STATE

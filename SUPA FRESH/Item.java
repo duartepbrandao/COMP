@@ -19,7 +19,7 @@ public Item(String _type, String _id)
 	id = _id;
 	
 	try{
-	type = ItemType.valueOf(_type);
+	type = ItemType.valueOf( _type.toLowerCase() );
 	}catch(Exception e){
 	type=ItemType.error;
 	}
@@ -160,26 +160,29 @@ public int validateItem()
 	);
 }
 
+static public String dateCheck(String str)
+{
+	str = str.replace("jan","January").replace("feb","February").replace("mar","March");
+	str = str.replace("apr","April"  ).replace("may","May"     ).replace("jun","June");
+	str = str.replace("jul","July"   ).replace("aug","August"  ).replace("sep","September");
+	str = str.replace("oct","October").replace("nov","November").replace("dec","December");
+	return str;
+}
 
 public String replaceSpecialCharacteres(String str)
 {
 	//(not used) javac -encoding UTF8
-str = str.replace("\\´a","á");
-str = str.replace("\\'a","à");
-str = str.replace("\\~a","ã"); 
-str = str.replace("\\^a","â");
-str = str.replace("\\'e","é");
-str = str.replace("\\^e","ê");
-str = str.replace("\\´{\\i}","í");
-str = str.replace("\\´I","Í");
-str = str.replace("\\´o","õ");
-str = str.replace("\\~o","Ãµ");
-str = str.replace("\\^o","ô");
-str = str.replace("\\´u","ú");
-str = str.replace("\\\"u","ü");
-str = str.replace("\\c{c}","ç"); 
-str = str.replace("\\c{C}","Ç");
-str = str.replace("{\"}","\"");
+str = str.replace("\\´a","á").replace("\\'a","à");
+str = str.replace("\\~a","ã").replace("\\^a","â");
+str = str.replace("\\'e","é").replace("\\^e","ê");
+str = str.replace("\\´{\\i}","í").replace("\\´I","Í");
+str = str.replace("\\´o","õ").replace("\\~o","Ãµ");
+str = str.replace("\\^o","ô").replace("\\´u","ú");
+str = str.replace("\\\"u","ü").replace("\\c{c}","ç"); 
+str = str.replace("\\c{C}","Ç").replace("{\"}","\"");
+str = str.replace("\\endash","–").replace("\\emdash","—");
+str = str.replace("\\-","-").replace("\\#","#");
+str = str.replace("\\&","&").replace("\\$","$").replace("\\dots","...");
 return str;
 }
 /*

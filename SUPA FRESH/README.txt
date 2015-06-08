@@ -166,6 +166,8 @@ que o que procede não é efectivamente a string pretendida. Assim sendo existe na
 das vezes a notificação de um erro que aparece consequentemente a este específico mas cuja identificação
 poderá não ser muito perceptivel ao utilizador. Idealente talvez podessemos tentar identificá-los com
 algumas considerações, como o comprimento do valor da entry, mas deixamos tal abordagem por implementar.
+Este erro pode descartar items que estão correctamente escritos dado a serem considerados como parte
+do texto não fechado.
 	
 	AVISOS ADICIONAIS:
 
@@ -220,11 +222,12 @@ As @strings repetidas podem ser usadas à mesma. O item faz a substituição
 com a última @string de id identificado antes de si. Imitando o que verificamos
 com o output testado em alguns exemplos de Latex.)
 
->Subtituição de símbolos especiais;
-
 //===================================================================================
 	REPRESENTACAO INTERMEDIA
 //===================================================================================
+
+(Não é usada uma "verdadeira" linguagem intermédia dada a simplcdade do trabalho, no 
+entanto são usadas estruturas que acabam por apresentar uma funcionalidade semelhante)
 
 Uma classe denominada Item, definida no Item.java, contem a os parâmetros necessários para guardar
 a informação de um item. 
@@ -239,44 +242,89 @@ durante o Parsing.
 	GERACAO DE CODIGO
 //===================================================================================
 
-TODO ... ... ...
+	DESCRIÇÃO:
+
+>São criados diversos ficheiro html.
+
+>Index.html serve de ligação aos outros ficheiros e é gerado sempre com a mesma informação.
+
+>Raw.html é criado vazio, apenas com o código a abertura default de um html.
+
+>Outros .html com o nome de cada tipo de item são criados com informação necessária para poder
+gerar tabelas cujo conteúdo será depois escrito.
+
+>Caso o utilizador tenha indicado uma entry para ordenação a lista items da "linguagem intermédia" é ordenada.
+
+>São percorridos os items, na lista de items fazendo um output semelhante ao de uma bibliografia
+para o raw.html. É também relizado outro output para tabelas html num ficheiro para o tipo específico do item.
+
+>É realizada a subtituição de símbolos especiais ao escrever o valor das entries nos ficheiros html;
+
+>Substituições de abreviaturas de meses são realizadas durabte o Parsing enquanto se passam os 
+dados para a "linguagem intermedia". 
 
 //===================================================================================
 	TESTES
 //===================================================================================
+
 A fim de mostrar as funcionalidades foram preparados diversos exemplos que podem ser 
 encontrados na pasta examples:
 
-TODO smaller specific tests...  ....
+TODO smaller specific tests ...  ....
 
->test2.bib: 
+	>test1.bib: 
+
+Este ficheiro imprime um exemplo dado no site "https://verbosus.com/bibtex-style-examples.html".
+Pretende mostrar um exemplo de compilação de vários items de diferentes tipos sem erros.
+Apresenta apenas um erro devido a primeira linha que faz referência ao sitio web e 
+avisos face a algumas entries obrigatórias estare em falta.
+	
+	>test2.bib: 
+	
 Este ficheiro pretende demonstrar todas as funcionalidades do nosso projeto.
-Ele mistura os diversos tipos de error que podem aparecer, com subtituições de
-@strings e items corretamente escritos. Analisando o output é possível verificar
-que os items bem contruidos são apresentados nno output e que os outros são descartados.
+Ele mistura os diversos tipos de erros que podem aparecer com items corretamente escritos, 
+com subtituições de @strings, crossreferences, concatenações de @strings com texto e
+texto a sublinhado, negrito e /ou itálico. Analisando o output é possível verificar
+que os items bem contruidos são apresentados no output e que os outros são descartados.
 Também podem ser verificados o tratamento de erros na compilação.
 
+	>:Outros
+	Partes Modificadas de bibliografias presentes em "http://www.netlib.org/tex/bib/".
 
 //===================================================================================
 	NOTAS ADICIONAIS
 //===================================================================================
 
-Alguns promenores ficaram itencionalmente diferentes face ao Bibtex/Latex.
+Consideramos a classificação das entries como sendo obrigatórias ou não, segundo o JabRef 2.10.
+
+Alguns pormenores ficaram itencionalmente diferentes face ao Bibtex/Latex.
 Achamos que não fazia sentido permitir newlines ou impedir a escrita de @ quando se usam chavetas.
+Não achamos relevante considerar comentários dado que o próprio Bibtex tende a ignorar 
+texto que esteja fora de items.
 
 //===================================================================================
 	PONTOS POSITIVOS
 //===================================================================================
 
 Trabalho razoavelmente completo.
-Apresenta ao utilizador feedback razoável sobre os erros encontrados e é compativel
-com a maior parte das funcionalidades que podem já vir definidas para Latex.
+Apresenta ao utilizador feedback razoável sobre os erros encontrados e é compatível
+com algumas das funcionalidades que podem já vir definidas para Latex.
 
 //===================================================================================
 	PONTOS NEGATIVOS
 //===================================================================================
 
-Não averiguamos o possível uso de @preambles.
+>Não averiguamos o possível uso de @preambles.
 Poderá não fazer sentido para o projeto em causa.
 
+>Revocando o que foi referido na "NOTA ADICIONAL SOBRE ERROS"
+talvez podessemos ter tratado este erro específico com maior cuidado.
 
+>O uso de funcionalidades do Latex para realçar o texto só pode ser feito
+através do uso de prefixos. O Latex também permite incluir no inicio de chavetas.
+exemplos:
+ \underline{text} -> funciona ok
+ {\underline text} -> devia funcionar mas não é contemplado
+
+ >Algumas funcionlidades como a referida acima e alguns caracteres especiais
+ não são considerados. A lista é extensa e depende sempre da versão do Latex considerada.

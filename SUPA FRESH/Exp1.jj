@@ -291,8 +291,23 @@ TOKEN:
 |<MONTHFILED:("m"|"M")("o"|"O")("n"|"N")("t"|"T")("h"|"H")("f"|"F")("i"|"I")("l"|"L")("e"|"E")("d"|"D")>
 |<DAYFILED:("d"|"D")("a"|"A")("y"|"Y")("f"|"F")("i"|"I")("l"|"L")("e"|"E")("d"|"D")>
 |<DAY:("d"|"D")("a"|"A")("y"|"Y")>	
+
+//- SOME OTHERS ...
+|<ISBN:("i"|"I")("s"|"S")("b"|"B")("n"|"N")>	
+|<ISSN:("i"|"I")("s"|"S")("s"|"S")("n"|"N")>
+|<LCCN:("l"|"L")("c"|"C")("c"|"C")("n"|"N")>
+|<PRICE:("p"|"P")("r"|"R")("i"|"I")("c"|"C")("e"|"E")>
+|<COPYRIGHT:("c"|"C")("o"|"O")("p"|"P")("y"|"Y")("r"|"R")("i"|"I")("g"|"G")("h"|"H")("t"|"T")>
+
+|<CODEN:("c"|"C")("o"|"O")("d"|"D")("e"|"E")("n"|"N")>
+|<BIBDATE:("b"|"B")("i"|"I")("b"|"B")("d"|"D")("a"|"A")("t"|"T")("e"|"E")>
+|<BIBSOURCE:("b"|"B")("i"|"I")("b"|"B")("s"|"S")("o"|"O")("u"|"U")("r"|"R")("c"|"C")("e"|"E")>
+|<ACKNOWLEDGEMENT:("a"|"A")("c"|"C")("k"|"K")("n"|"N")("o"|"O")("w"|"W")("l"|"L")("e"|"E")("d"|"D")("g"|"G")("e"|"E")("m"|"M")("e"|"E")("n"|"N")("t"|"T")>
+|<FJOURNAL:("f"|"F")("j"|"J")("o"|"O")("u"|"U")("r"|"R")("n"|"N")("a"|"A")("l"|"L")>	
 	
-	|<ID: (["a"-"z","A"-"Z","0"-"9","_"])+>
+
+//=================================================================
+	|<ID: (["a"-"z","A"-"Z","0"-"9","_",":","-"])+>
 	
 	|<INFO_SEPARATOR: "," >
 	
@@ -312,7 +327,7 @@ TOKEN:
  	" " | "\t" | "\r" | "\n"
  }
  <STRING_STATE> TOKEN: {
- <STRING_TAG : ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])* >:ITEM_STATE
+ <STRING_TAG : ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9","_",":","-"])* >:ITEM_STATE
  //|<STRING_EQUAL_O : "="> :INFO_ENTRY_STATE_OTHER
  //|<STRING_EQUAL_B : "={"> :INFO_ENTRY_STATE_BRACKETS
  //|<STRING_EQUAL_A : "=\""> :INFO_ENTRY_STATE_ASPS
@@ -350,6 +365,10 @@ TOKEN:
  |("\\" "\"u")
  |("\\" "c{c}") 
  |("\\" "c{C}")
+ |"\\emdash"|"\\endash"|"\\dots"
+ //not used below... 
+ |"\\slash"|"\\em"|"\\emph"|("\\" ["c","l","d"] "dots")
+ |("\\" ["-","#","&","$"]) 
  //not using \\ fr new lines, does not make much sense in this context
  >
 //|<INFO_ENTRY1:"\"" ((~["{","}","\""])|"{\"}")+ "\"" >:DEFAULT 
@@ -387,6 +406,10 @@ TOKEN:
  |("\\" "\"u")
  |("\\" "c{c}") 
  |("\\" "c{C}")
+ |"\\emdash"|"\\endash"|"\\dots"
+ //not used below... 
+ |"\\slash"|"\\em"|"\\emph"|("\\" ["c","l","d"] "dots")
+ |("\\" ["-","#","&","$"]) 
  //not using \\ fr new lines, does not make much sense in this context
  >
 |<INFO2_BACK_DEFAULT: "" >:ITEM_STATE
@@ -397,11 +420,13 @@ TOKEN:
  " " | "\t" | "\r" | "\n"
 }
 <INFO_ENTRY_STATE_OTHER> TOKEN:{
-<INFO_STRING_TAG: (["a"-"z","A"-"Z"]|"_") (["a"-"z","A"-"Z","0"-"9"]|"_")*>
-|<INFO_ENTRY_NUM: (["0"-"9"])+ >:ITEM_STATE
+<INFO_ENTRY_NUM: ((["0"-"9"])+)|<INFO_MONTH_TAG> >:ITEM_STATE//also for Months now
+|<#INFO_MONTH_TAG: "jan"|"feb"|"mar"|"apr"|"may"|"jun"|"jul"|"aug"|"sep"|"oct"|"nov"|"dec" >
+|<INFO_STRING_TAG: ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9","_",":","-"])*>:ITEM_STATE
 |<INFO0_BACK_DEFAULT: "" >:ITEM_STATE
 }
- 
+
+ //=================================================================================
 //START=REFERENCIA
 void Start() : {Token t1;}
 {
@@ -555,7 +580,7 @@ void info(String s1) : {Token t1;}
 		|(<ENTRY_EQUAL_O> {checkequal=true;}
 		
 		(
-		(t1=<INFO_ENTRY_NUM> {res+=t1.image;})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
+		(t1=<INFO_ENTRY_NUM> {res+= Item.dateCheck(t1.image);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
 		//substituting @strings this way will only consider @string previously declared
 		//which is done by default in LateX. so it's better this way to keep similarities
 		|(t1=<INFO_STRING_TAG> { res+=Item.replaceStrings(t1.image,t1.endLine,t1.endColumn);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
@@ -579,7 +604,7 @@ void info(String s1) : {Token t1;}
 		/*2*/
 		|(<INFO_CONCAT_O> 
 		(
-		(t1=<INFO_ENTRY_NUM> {res+=t1.image;})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
+		(t1=<INFO_ENTRY_NUM> {res+= Item.dateCheck(t1.image);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + t1.image  ); } )
 		//substituting @strings this way will only consider @string previously declared
 		//which is done by default in LateX. so it's better this way to keep similarities
 		|(t1=<INFO_STRING_TAG> { res+=Item.replaceStrings(t1.image,t1.endLine,t1.endColumn);})//{Item.items.get(Item.items.size()-1).addEntry(s1 + "=" + Item.replaceStrings(t1.image,t1.endLine,t1.endColumn) ); } )
@@ -608,11 +633,11 @@ void specialInfoTYPE_BRACKETS() : {Token t1;}
 	
 	// - - - - - - - - - - - - - - - - - - -
 	( 	
-		(
+		[
 		<INFO1_ITALIC> 		{result+= "<i>"; endspecial="</i>";}
 		|<INFO1_BOLD>		{result+= "<b>"; endspecial="</b>";}
 		|<INFO1_UNDERLINE>	{result+= "<u>"; endspecial="</u>";}
-		)
+		]
 		
 		<INFO1_OPEN_BRACKET> 	
 	( 
@@ -650,11 +675,11 @@ void specialInfoTYPE_ASPS() : {Token t1;}
 	{String result="";String endspecial="";auxInfoBuilder="";}
 	
 	( 	
-		(
+		[
 		<INFO2_ITALIC> 		{result+= "<i>"; endspecial="</i>";}
 		|<INFO2_BOLD>		{result+= "<b>"; endspecial="</b>";}
 		|<INFO2_UNDERLINE>	{result+= "<u>"; endspecial="</u>";}
-		)
+		]
 		
 		<INFO2_OPEN_BRACKET> 	
 	( 
@@ -720,7 +745,39 @@ void entry_REVIEW() : {Token t1;} {
 	}
 void entry_ANNOTATE() : {Token t1;} { 
  t1=<ANNOTATE> info(t1.image)
-} // VERIFICAR!!!!!!!!!
+} 
+//- - - - - 
+void entry_ISBN() : {Token t1;} { 
+ t1=<ISBN> info(t1.image)
+} 
+void entry_ISSN() : {Token t1;} { 
+ t1=<ISSN> info(t1.image)
+}  
+void entry_LCCN() : {Token t1;} { 
+ t1=<LCCN> info(t1.image)
+}  
+void entry_PRICE() : {Token t1;} { 
+ t1=<PRICE> info(t1.image)
+}  
+void entry_COPYRIGHT() : {Token t1;} { 
+ t1=<COPYRIGHT> info(t1.image)
+} 	 
+void entry_CODEN() : {Token t1;} { 
+ t1=<CODEN> info(t1.image)
+} 	 
+void entry_BIBDATE() : {Token t1;} { 
+ t1=<BIBDATE> info(t1.image)
+} 	 
+void entry_BIBSOURCE() : {Token t1;} { 
+ t1=<BIBSOURCE> info(t1.image)
+} 	 
+void entry_ACKNOWLEDGEMENT() : {Token t1;} { 
+ t1=<ACKNOWLEDGEMENT> info(t1.image)
+} 	 
+void entry_FJOURNAL() : {Token t1;} { 
+ t1=<FJOURNAL> info(t1.image)
+} 	 
+
 //===============================================================================
 //ENTRY PRODUCTIONS
 void entry_AUTHOR() : {Token t1;} { 
@@ -817,6 +874,9 @@ void GeneralEntry() : {}
 	try{
 	 (entry_CROSSREF()|entry_KEYWORDS()|entry_FILE()
 	 |entry_DOI()|entry_URL()|entry_COMMENT()|entry_OWNER()|entry_TIMESTAMP()|entry_ANNOTATE()
+	 |entry_ABSTRACT()|entry_REVIEW()
+	 |entry_ISBN()|entry_ISSN()|entry_LCCN()|entry_PRICE()|entry_COPYRIGHT()
+	 |entry_CODEN()|entry_BIBDATE()|entry_BIBSOURCE()|entry_ACKNOWLEDGEMENT()|entry_FJOURNAL()
 	 )
 	}
 	 catch (ParseException e) {throw e;}
@@ -857,6 +917,7 @@ try{
  | entry_VOLUME() | entry_NUMBER()
  | entry_SERIES() |entry_ADDRESS() |entry_EDITION()
  | entry_MONTH() | entry_NOTE() 
+ | entry_PAGES() /*not in jabref but used in some examples and actually makes sense*/
  ) 
  | GeneralEntry() //{ System.out.println("DEBUG !!!");}
  |entry_not_valid()
@@ -1242,7 +1303,7 @@ void StringOperatorEntry() : {Token t0; Token t1; Token t2;}
   (
   (<ENTRY_EQUAL_A> [t2=<INFO2_BODY_A> {res+=t2.image;}] [specialInfoTYPE_ASPS() {res+=auxInfoBuilder;}	[t2=<INFO2_BODY_A> {res+=t2.image;}]] <INFO2_OC_ASPS> )
   |(<ENTRY_EQUAL_B> [t2=<INFO1_BODY_B> {res+=t2.image;}] [specialInfoTYPE_BRACKETS() {res+=auxInfoBuilder;} [t2=<INFO1_BODY_B> {res+=t2.image;}]] <INFO1_CLOSE_BRACKET>)
-  |(<ENTRY_EQUAL_O> t2=<INFO_ENTRY_NUM> {res+=t2.image;}) 
+  |(<ENTRY_EQUAL_O> t2=<INFO_ENTRY_NUM> {res+=Item.dateCheck(t2.image);}) 
   ) { Item.subs.add(t1.image,res ); }
   
   )
